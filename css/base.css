@@ -1,0 +1,80 @@
+/* ==========================================================
+   base.css  –  variáveis (cores/fontes/imagens), reset e utilitários
+   Tudo que você quiser trocar depois (cor, fonte, imagem) está AQUI.
+   ========================================================== */
+:root {
+  /* ---- Paleta (Cores.png do Figma) ---- */
+  --verde-primaria: #3F9C24;
+  --verde-menu: #2D7D16;          /* verde mais escuro do menu e do botão "ok" (ajuste se precisar) */
+  --verde-menu-escuro: #1B5A0C;   /* "sombra" 3D do botão ok */
+  --amarelo: #FFA409;             /* secundária */
+  --fundo: #F4E8C1;               /* creme dos painéis */
+  --neutra: #E3793D;              /* laranja das bordas / textos */
+  --neutra-escura: #B65A25;       /* sombra 3D dos botões */
+  --rosa: #FFA7A4;                /* destaque */
+  --azul-claro: #74aacc73;
+  --azul: #388BBF;                /* destaque (links) */
+  --azul-escuro: #2A6A95;
+  --contraste: #3D3028;           /* marrom escuro dos textos */
+
+  /* ---- Wireframe (perfil e lojas ainda sem cor definida) ---- */
+  --wf-bg: #D9D9D9;
+  --wf-bg-claro: #EBEBEB;
+  --wf-bg-escuro: #B0B0B0;
+  --wf-borda: #333333;
+  --cinza-placeholder: #D9D9D9;
+
+  --pagina-bg: #F4E8C1;
+
+  /* ---- Fontes ----
+     Comfortaa é carregada pelo <link> do Google Fonts em cada HTML.
+     Para usar a fonte do jogo: declare um @font-face aqui embaixo
+     e troque o valor de --fonte-jogo.                                */
+  --fonte: "Comfortaa", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --fonte-jogo: var(--fonte);     /* TODO: fonte pixel do Stardew (botões Entrar/Criar) */
+
+  /* ---- Imagens (troque pelos arquivos reais) ---- */
+  --img-fundo: url("../assets/img/bg.png");  /* céu + montanhas */
+
+  /* ---- Medida do menu (barra só de ícones) ---- */
+  --menu-largura: 114px;
+}
+
+/* @font-face de exemplo (descomente e ajuste o caminho):
+@font-face {
+  font-family: "StardewFonte";
+  src: url("../assets/fonts/stardew.woff2") format("woff2");
+  font-display: swap;
+}
+*/
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--fonte);
+  color: var(--contraste);
+  background: var(--pagina-bg);
+  line-height: 1.5;
+}
+
+h1, h2, h3, p, ul, figure { margin: 0; padding: 0; }
+ul { list-style: none; }
+img, svg { display: block; max-width: 100%; }
+button, input { font: inherit; color: inherit; }
+a { color: inherit; }
+
+/* foco visível para quem navega pelo teclado */
+:focus-visible { outline: 3px solid var(--azul); outline-offset: 3px; }
+
+/* texto só para leitores de tela */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}

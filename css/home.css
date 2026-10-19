@@ -1,0 +1,23 @@
+/* ==========================================================
+   home.css  –  tela inicial (depois do login)
+   Blocos cinza = placeholders. Troque o texto/ imagem quando tiver o conteúdo.
+   ========================================================== */
+.home { display: flex; flex-direction: column; gap: clamp(3rem, 8vw, 6.5rem); padding-bottom: 4rem; }
+
+.bloco {
+  width: min(100%, 520px);
+  min-height: 260px;
+  padding: 1rem 1.25rem 1.5rem;
+  background: var(--cinza-placeholder);
+}
+.bloco__titulo { margin-bottom: .75rem; font-size: 1.25rem; font-weight: 400; text-align: center; }
+.bloco__texto { font-size: .95rem; text-align: left; max-width: 62ch; }
+
+.bloco--esq    { align-self: flex-start; }
+.bloco--dir    { align-self: flex-end; }
+.bloco--centro { align-self: center; width: min(100%, 434px); min-height: 240px; }
+
+@media (max-width: 600px) {
+  .bloco { width: 88%; }
+  .bloco--centro { width: 100%; }
+}

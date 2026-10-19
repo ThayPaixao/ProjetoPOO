@@ -1,0 +1,74 @@
+/* ==========================================================
+   lojas.css  –  comprar (com NPCs) e vender (wireframe)
+   O mesmo painel serve para as duas abas: o JS troca o conteúdo da grade.
+   ========================================================== */
+   
+
+.loja {
+  display: grid;
+  grid-template-columns: 245px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  max-width: 1050px;
+  height: calc(100vh - 112px);
+  height: calc(100dvh - 112px);
+  min-height: 520px;
+  background: var(--azul-claro);
+  border: 2px solid var(--wf-borda);
+  margin: 0 auto;
+}
+
+/* ---------- Abas + dinheiro ---------- */
+.loja__abas { grid-column: 1 / -1; display: flex; background: var(--verde-menu-escuro); border-bottom: 2px solid var(--wf-borda); }
+.aba {
+  width: 245px; padding: .8rem 1rem;
+  font-size: 1.6rem; text-align: center;
+  background: var(--verde-menu); border: 0; border-right: 2px solid var(--wf-borda);
+  cursor: pointer; transition: background-color .15s;
+}
+.aba:hover  { background: var(--verde-menu); }
+.aba:active { background: var(--verde-primaria); }
+.aba[aria-selected="true"] { background: var(--azul); }
+
+.loja__dinheiro {
+  margin: .4rem .4rem .4rem auto; padding: .1rem 1.2rem; min-width: 190px;
+  font-size: 1.5rem; text-align: center; vertical-align: bottom;
+  background: var(--fundo); border: 2px solid var(--wf-borda);
+}
+
+/* ---------- NPCs ---------- */
+.npcs { display: flex; flex-direction: column; min-height: 0; border-right: 2px solid var(--wf-borda); }
+.npcs__sprite { display: grid; place-items: center; flex: 1 1 auto; min-height: 220px; padding: 1.5rem; }  /* nunca encolhe abaixo do sprite */
+.npcs__sprite img { width: 172px; height: 172px; object-fit: contain; background: var(--wf-bg-claro); border: 1px solid var(--wf-borda); }
+
+/* lista rolável: se houver mais NPCs do que cabe, aparece a barra de rolagem */
+.npcs__lista {
+  display: flex; flex-direction: column;
+  flex: 0 1 auto; min-height: 0;
+  overflow-y: auto; overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.npc { flex: none; }
+.npc {
+  padding: 1.2rem; font-size: 1.6rem;
+  background: var(--azul-claro); border: 0; border-top: 2px solid var(--wf-borda);
+  cursor: pointer; transition: background-color .15s, box-shadow .15s;
+}
+.npc:hover  { background: var(--azul); }
+.npc:active { background: var(--azul-escuro); }
+.npc[aria-pressed="true"] { background: var(--azul-claro); box-shadow: inset 6px 0 0 var(--azul); }
+
+/* ---------- Grade de itens ---------- */
+.loja__itens { min-height: 0; overflow-y: auto; padding: 1.5rem 2rem; }
+.loja__aviso { min-height: 1.4em; margin-bottom: .75rem; font-size: .9rem; }
+
+@media (max-width: 900px) {
+  .loja { grid-template-columns: 1fr; grid-template-rows: auto auto minmax(0, 1fr); height: auto; }
+  .aba { width: auto; flex: 1; font-size: 1.2rem; }
+  .loja__dinheiro { min-width: 0; font-size: 1.1rem; }
+  .npcs { border-right: 0; border-bottom: 2px solid var(--wf-borda); }
+  .npcs__sprite { flex: none; padding: 1rem; }
+  .npcs__sprite img { width: 110px; height: 110px; }
+  .npcs__lista { flex-direction: row; flex-wrap: wrap; max-height: 230px; }
+  .npc { flex: 1 1 45%; font-size: 1.2rem; padding: .8rem; }
+  .loja__itens { max-height: 560px; padding: 1rem; }
+}

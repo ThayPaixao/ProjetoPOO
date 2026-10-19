@@ -1,0 +1,86 @@
+/* ==========================================================
+   menu.css  –  menu lateral + layout das páginas internas
+   Fechado: só uma bolinha verde com os 3 tracinhos (.menu-fab).
+   Aberto: barra de 114px só com ícones; a bolinha vira o botão de fechar.
+   Desktop: a página é "empurrada" para o lado. Mobile (<=768px): a barra fica por cima.
+   ========================================================== */
+
+/* ---------- Layout das páginas com menu ---------- */
+.pagina { min-height: 100vh; display: flex; flex-direction: column; transition: margin-left .25s ease; }
+body.menu-aberto .pagina { margin-left: var(--menu-largura); }
+.pagina__conteudo { flex: 1; padding: 56px 24px; }
+
+/* ---------- Bolinha / botão do menu ---------- */
+.menu-fab {
+  position: fixed; top: 12px; left: 12px; z-index: 60;     /* fica acima da barra */
+  display: grid; place-items: center;
+  width: 44px; height: 44px; padding: 0;
+  background: var(--verde-menu); color: var(--fundo);
+  border: 0; border-radius: 50%;
+  box-shadow: 0 3px 0 var(--verde-menu-escuro);
+  cursor: pointer;
+  transition: top .25s ease, left .25s ease, box-shadow .25s ease, transform .1s ease, filter .15s ease;
+}
+.menu-fab .icone { width: 26px; height: 26px; }
+.menu-fab:hover  { filter: brightness(1.18); }
+.menu-fab:active { transform: scale(.9); }
+
+/* menu aberto: a bolinha desliza para o topo da barra (mesma cor, então "some" nela) */
+body.menu-aberto .menu-fab { top: 53px; left: 35px; box-shadow: none; }
+
+.icone { width: 36px; height: 36px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- Barra (só ícones) ---------- */
+.menu {
+  position: fixed; inset: 0 auto 0 0;
+  width: var(--menu-largura);
+  background: var(--verde-menu);
+  z-index: 50;
+  transform: translateX(-100%);
+  visibility: hidden;                      /* fechado: não recebe foco do teclado */
+  transition: transform .25s ease, visibility .25s;
+}
+.menu.is-open { transform: none; visibility: visible; }
+
+.menu__lista {
+  display: flex; flex-direction: column;
+  gap: clamp(40px, 9vh, 76px);
+  margin-top: calc(97px + clamp(40px, 10vh, 92px));   /* abaixo do botão do topo */
+}
+.menu__item { position: relative; margin-left: 22px; border-radius: 36px 0 0 36px; }
+
+.menu__link {
+  display: flex; align-items: center;
+  height: 70px; padding-left: 17px;
+  color: var(--fundo); text-decoration: none;
+  border-radius: 36px 0 0 36px;
+  transition: background-color .15s, color .15s, transform .1s;
+}
+.menu__link:hover  { background: rgba(255,255,255,.14); }
+.menu__link:active { background: rgba(255,255,255,.26); transform: scale(.97); }
+
+/* ---------- Item ativo: "aba" branca que se funde com a página ---------- */
+.menu__item.is-active { background: var(--fundo); }
+.menu__item.is-active .menu__link { color: var(--contraste); }
+.menu__item.is-active .menu__link:hover { background: transparent; }
+
+/* curvas côncavas em cima e embaixo (radial-gradient pinta só dentro dos 30px, sem vazar) */
+.menu__item.is-active::before,
+.menu__item.is-active::after {
+  content: ""; position: absolute; right: 0; width: 30px; height: 30px; pointer-events: none;
+}
+.menu__item.is-active::before { bottom: 100%; background: radial-gradient(circle at 0 0,    transparent 29.5px, var(--pagina-bg) 30px); }
+.menu__item.is-active::after  { top: 100%;    background: radial-gradient(circle at 0 100%, transparent 29.5px, var(--pagina-bg) 30px); }
+
+/* ---------- Fundo escurecido (só mobile) ---------- */
+.menu-fundo {
+  display: none; position: fixed; inset: 0; z-index: 40;
+  background: rgba(61,48,40,.35); opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.menu-fundo.is-visivel { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 768px) {
+  body.menu-aberto .pagina { margin-left: 0; }      /* no celular a barra fica por cima */
+  .menu-fundo { display: block; }
+  .pagina__conteudo { padding: 4rem 1rem 2rem; }
+}

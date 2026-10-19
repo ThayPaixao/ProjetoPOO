@@ -1,0 +1,106 @@
+/* ==========================================================
+   components.css  –  peças reutilizáveis: botão, input, link, painel
+   Estados: normal / hover (passar o mouse) / active (pressionado) / focus
+   ========================================================== */
+
+/* ---------- BOTÃO ---------- */
+.btn {
+  --btn-fundo: var(--fundo);
+  --btn-texto: var(--neutra);
+  --btn-borda: var(--neutra);
+  --btn-sombra: var(--neutra-escura);
+  --elev: 4px;                       /* "altura" do botão 3D */
+
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: .6em 1.4em;
+  background: var(--btn-fundo);
+  color: var(--btn-texto);
+  border: 4px solid var(--btn-borda);
+  border-radius: 10px;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: transform .08s ease, box-shadow .08s ease, filter .15s ease;
+}
+.btn:hover  { filter: brightness(1.06); }
+.btn:active { transform: translateY(var(--elev)); box-shadow: 0 0 0 var(--btn-sombra); filter: brightness(.94); } /* "apertado" */
+.btn:disabled, .btn[aria-disabled="true"] { opacity: .5; cursor: not-allowed; transform: none; filter: none; }
+
+.btn--ok {
+  --btn-fundo: var(--verde-menu);
+  --btn-texto: var(--fundo);
+  --btn-borda: var(--verde-menu);
+  --btn-sombra: var(--verde-menu-escuro);
+}
+.btn--quadrado { width: 50px; height: 50px; padding: 0; font-size: 1.25rem; border-width: 3px; border-radius: 8px; }
+.btn--jogo { font-family: var(--fonte-jogo); font-size: 1.5rem; }
+.btn--pequeno {
+  --elev: 3px;
+  padding: .2em .8em; font-size: .8rem; border-width: 2px; border-radius: 6px;
+  --btn-fundo: var(--wf-bg-escuro); --btn-texto: var(--contraste); --btn-borda: var(--wf-borda); --btn-sombra: #6d6d6d;
+}
+
+/* ---------- INPUT com label flutuante ----------
+   <div class="campo">
+     <input class="campo__input" placeholder=" " ...>   ← o placeholder " " é obrigatório
+     <label class="campo__label">Texto</label>
+   </div>                                                         */
+.campo { position: relative; padding-top: 1.2rem; }
+
+.campo__input {
+  width: 100%;
+  padding: .55rem .6rem .35rem;
+  background: transparent;
+  color: var(--contraste);
+  font-size: 1.05rem;
+  border: 0;
+  border-bottom: 3px solid var(--neutra);
+  border-radius: 6px 6px 0 0;
+  transition: background-color .15s, border-color .15s, box-shadow .15s;
+}
+.campo__input:hover  { background: rgba(227,121,61,.10); border-bottom-color: var(--neutra-escura); }
+.campo__input:focus  { outline: none; background: rgba(227,121,61,.16); border-bottom-color: var(--neutra-escura); box-shadow: 0 3px 0 var(--neutra-escura); }
+.campo__input:active { background: rgba(227,121,61,.26); }  /* clique/pressionado */
+.campo__input:user-invalid { border-bottom-color: #C0392B; }
+
+.campo__label {
+  position: absolute; left: .6rem; bottom: .4rem;
+  color: var(--neutra);
+  transform-origin: left bottom;
+  pointer-events: none;
+  transition: transform .15s ease, color .15s ease;
+}
+.campo__input:focus + .campo__label,
+.campo__input:not(:placeholder-shown) + .campo__label {
+  transform: translateY(-1.7rem) scale(.78);
+  color: var(--neutra-escura);
+}
+
+/* ---------- LINK ---------- */
+.link { color: var(--azul); text-decoration: underline; text-underline-offset: 3px; transition: color .15s; }
+.link:hover  { color: var(--azul-escuro); }
+.link:active { color: var(--contraste); transform: translateY(1px); }
+
+/* ---------- PAINEL "madeira" (card de login/registro) ---------- */
+.painel-madeira {
+  width: min(550px, 100%);
+  padding: 2.5rem 3rem;
+  background: var(--fundo);
+  border: 15px solid var(--neutra);
+  border-radius: 20px;
+  box-shadow: 0 8px 0 rgba(61,48,40,.25);
+}
+
+/* ---------- FORMULÁRIOS ---------- */
+.form { display: grid; gap: 1.4rem; }
+.form__mensagem { min-height: 1.3em; color: #B3261E; font-size: .9rem; }
+.form__acoes { display: flex; align-items: center; gap: 1rem; }
+.form__acoes .link { margin-right: auto; }
+.form__acoes .btn + .btn { margin-left: .5rem; }
+
+/* ---------- RODAPÉ ---------- */
+.rodape { padding: 3rem 1.5rem 6rem; background: #000; color: #fff; text-align: center; }
+
+@media (max-width: 480px) {
+  .painel-madeira { padding: 1.75rem 1.5rem; border-width: 10px; }
+}

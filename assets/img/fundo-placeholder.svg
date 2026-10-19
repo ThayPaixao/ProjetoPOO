@@ -1,0 +1,18 @@
+<!-- PLACEHOLDER: céu + nuvens + montanhas. Troque a variável --img-fundo em css/base.css -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0A84FF"/>
+      <stop offset=".55" stop-color="#4FD0F0"/>
+      <stop offset=".8" stop-color="#7DFFD8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#ceu)"/>
+  <g fill="#E6F8FF" opacity=".95">
+    <ellipse cx="150" cy="90" rx="130" ry="50"/><ellipse cx="260" cy="60" rx="90" ry="45"/>
+    <ellipse cx="600" cy="110" rx="170" ry="60"/><ellipse cx="520" cy="150" rx="110" ry="40"/>
+    <ellipse cx="1000" cy="220" rx="100" ry="40"/><ellipse cx="1330" cy="650" rx="110" ry="60"/>
+  </g>
+  <path d="M0 770 L140 700 L260 750 L420 660 L560 740 L700 690 L860 760 L1020 670 L1180 750 L1320 700 L1440 750 V900 H0Z" fill="#2A8F6A"/>
+  <path d="M0 830 L180 770 L340 830 L520 760 L700 840 L900 780 L1100 840 L1280 780 L1440 830 V900 H0Z" fill="#3FBF2A"/>
+</svg>

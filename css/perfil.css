@@ -1,0 +1,48 @@
+/* ==========================================================
+   perfil.css  –  tela de perfil (wireframe, sem cores definidas)
+   ========================================================== */
+.perfil {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 308px;
+  max-width: 1170px;
+  height: calc(100vh - 112px);
+  height: calc(100dvh - 112px);
+  min-height: 560px;
+  background: var(--wf-bg);
+  border: 1px solid var(--wf-borda);
+}
+
+/* ---------- Coluna principal ---------- */
+.perfil__principal { display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 1.5rem; min-height: 0; padding: 1.75rem; }
+
+.perfil__cabecalho { display: grid; grid-template-columns: 195px minmax(0, 1fr) auto; gap: 1.5rem; align-items: start; }
+
+.perfil__foto { width: 195px; height: 225px; background: var(--wf-bg-claro); border: 1px solid var(--wf-borda); }
+.perfil__foto img { width: 100%; height: 100%; object-fit: cover; }
+
+.perfil__dados { display: grid; gap: 1.1rem; max-width: 263px; }
+.perfil__info {
+  padding: .1rem .6rem; font-size: 1.4rem; text-align: center;
+  background: var(--wf-bg-claro); border: 1px solid var(--wf-borda);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ---------- Inventário ---------- */
+.inventario { display: flex; flex-direction: column; min-height: 0; }
+.inventario__titulo { margin-bottom: .25rem; font-size: .8rem; font-weight: 400; }
+.inventario .grade-itens { flex: 1; overflow-y: auto; padding: 1.5rem; border: 1px solid var(--wf-borda); }
+
+/* ---------- Histórico de vendas ---------- */
+.historico { display: flex; flex-direction: column; min-height: 0; border-left: 1px solid var(--wf-borda); }
+.historico__titulo { padding: 1.5rem 1rem; font-size: .8rem; font-weight: 400; text-align: center; border-bottom: 1px solid var(--wf-borda); }
+.historico__lista { flex: 1; overflow-y: auto; }
+
+@media (max-width: 900px) {
+  .perfil { grid-template-columns: 1fr; height: auto; min-height: 0; }
+  .perfil__cabecalho { grid-template-columns: 140px minmax(0, 1fr); }
+  .perfil__foto { width: 140px; height: 165px; }
+  .perfil__cabecalho > .btn { grid-column: 1 / -1; justify-self: start; }
+  .inventario .grade-itens { max-height: 420px; }
+  .historico { border-left: 0; border-top: 1px solid var(--wf-borda); }
+  .historico__lista { max-height: 420px; }
+}

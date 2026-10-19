@@ -1,0 +1,27 @@
+/* ==========================================================
+   auth.css  –  tela principal (index), login e registro
+   ========================================================== */
+.tela-auth {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+  background-color: #4FD0F0;                 /* cor de segurança se a imagem falhar */
+  background-image: var(--img-fundo);
+  background-size: cover;  /* TODO: ajustar para o tamanho real da imagem */
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
+
+/* ---- Tela principal ---- */
+.tela-auth--inicio { place-items: start center; padding-top: 4vh; }
+
+.inicio { display: flex; flex-direction: column; align-items: center; }
+.inicio__logo img { width: min(700px, 86vw); height: auto; filter: drop-shadow(0 6px 0 rgba(61,48,40,.2)); }
+.inicio__botoes { display: flex; gap: 3.5rem; margin-top: clamp(2rem, 10vh, 12rem); }
+.inicio__botoes .btn { min-width: 150px; min-height: 78px; }
+
+@media (max-width: 480px) {
+  .inicio__botoes { gap: 1.25rem; }
+  .inicio__botoes .btn { min-width: 130px; }
+}

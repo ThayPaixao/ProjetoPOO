@@ -1,0 +1,53 @@
+/* ==========================================================
+   itens.css  –  card de item (inventário/loja), item do histórico e estrela
+   Usado em perfil.html e lojas.html. Cores = wireframe (trocar depois).
+   ========================================================== */
+.grade-itens {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1.5rem;
+  align-content: start;
+}
+.vazio { grid-column: 1 / -1; padding: 1.5rem; text-align: center; color: #555; }
+
+/* ---------- Card ---------- */
+.item-card {
+  position: relative;
+  display: flex; flex-direction: column; gap: .4rem;
+  padding: .9rem;
+  background: var(--wf-bg);
+  border: 1px solid var(--wf-borda);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.item-card:hover { transform: translateY(-3px); box-shadow: 0 5px 0 rgba(0,0,0,.18); }
+
+.item-card__img {
+  width: 100%; aspect-ratio: 1; object-fit: contain; padding: .5rem;
+  background: var(--wf-bg-claro); border: 1px solid var(--wf-borda);
+}
+.item-card__nome, .item-card__linha {
+  padding: .1rem .35rem;
+  font-size: .78rem; font-weight: 400; text-align: center;
+  background: var(--wf-bg-claro); border: 1px solid var(--wf-borda);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.item-card__acao { margin-top: .2rem; width: 100%; }
+.item-card .estrela { position: absolute; top: .2rem; right: .2rem; }
+
+/* ---------- Estrela de qualidade (data-quality: 0 normal, 1 bronze, 2 prata, 3 ouro) ---------- */
+.estrela { width: 28px; height: 28px; fill: #F5F5F5; stroke: var(--wf-borda); stroke-width: 1.2; stroke-linejoin: round; }
+.estrela[data-quality="1"] { fill: #C98A4B; }
+.estrela[data-quality="2"] { fill: #C9CFD6; }
+.estrela[data-quality="3"] { fill: #FFC21A; }
+
+/* ---------- Item do histórico de vendas ---------- */
+.historico-item {
+  position: relative;
+  display: grid; grid-template-columns: 68px 1fr; gap: .75rem; align-items: center;
+  padding: .6rem .75rem;
+  border-bottom: 1px solid var(--wf-borda);
+}
+.historico-item__img { width: 68px; height: 68px; object-fit: contain; padding: .25rem; background: var(--wf-bg-claro); border: 1px solid var(--wf-borda); }
+.historico-item__dados { display: grid; gap: .2rem; margin-right: 2.2rem; }
+.historico-item__dados > * { padding: 0 .35rem; font-size: .75rem; font-weight: 400; text-align: center; background: var(--wf-bg-claro); border: 1px solid var(--wf-borda); }
+.historico-item .estrela { position: absolute; top: .6rem; right: .6rem; }

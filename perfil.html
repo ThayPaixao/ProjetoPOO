@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Perfil – Stardew Valley</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/menu.css">
+  <link rel="stylesheet" href="css/itens.css">
+  <link rel="stylesheet" href="css/perfil.css">
+</head>
+<body>
+  <!-- ===== MENU (copie este bloco em toda página interna; mude só a classe is-active) =====
+       A bolinha (.menu-fab) é o único botão: abre e fecha a barra de ícones. -->
+  <button class="menu-fab" type="button" data-menu-toggle aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+    <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
+  <div class="menu-fundo"></div>
+
+  <aside class="menu" id="menu" aria-label="Menu principal">
+    <nav aria-label="Páginas">
+      <ul class="menu__lista">
+        <li class="menu__item">
+          <a class="menu__link" href="home.html" title="Home">
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 11L12 3.5 20.5 11V20.5H14.5V14.5H9.5V20.5H3.5z"/></svg>
+            <span class="sr-only">Home</span>
+          </a>
+        </li>
+        <li class="menu__item is-active">
+          <a class="menu__link" href="perfil.html" title="Perfil" aria-current="page">
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.5 18.5c1.5-2.4 3.3-3.5 5.5-3.5s4 1.1 5.5 3.5"/></svg>
+            <span class="sr-only">Perfil</span>
+          </a>
+        </li>
+        <li class="menu__item">
+          <a class="menu__link" href="lojas.html" title="Lojas">
+            <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 12.5H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/><path d="M9 13c.8 1.2 1.8 1.8 3 1.8s2.2-.6 3-1.8"/></svg>
+            <span class="sr-only">Lojas</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="pagina">
+    <main class="pagina__conteudo">
+      <div class="perfil">
+
+        <section class="perfil__principal">
+          <header class="perfil__cabecalho">
+            <figure class="perfil__foto">
+              <!-- foto do usuário (preenchida por js/perfil.js) -->
+              <img id="perfil-foto" src="assets/img/avatar-placeholder.svg" alt="Foto do perfil">
+            </figure>
+
+            <div class="perfil__dados">
+              <p class="perfil__info" id="perfil-nome">Nome</p>
+              <p class="perfil__info" id="perfil-dinheiro">Money</p>
+            </div>
+
+            <!-- TODO (banco): encerrar a sessão no servidor antes de ir para a tela inicial -->
+            <a class="btn btn--pequeno" id="btn-sair" href="index.html">sair</a>
+          </header>
+
+          <section class="inventario" aria-labelledby="inventario-titulo">
+            <h2 class="inventario__titulo" id="inventario-titulo">Inventário</h2>
+            <!-- os cards entram aqui (modelo no <template> abaixo) -->
+            <div class="grade-itens" id="inventario-lista"></div>
+          </section>
+        </section>
+
+        <aside class="historico" aria-labelledby="historico-titulo">
+          <h2 class="historico__titulo" id="historico-titulo">Histórico de Vendas</h2>
+          <ul class="historico__lista" id="historico-lista"></ul>
+        </aside>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== MODELO DE ITEM DO INVENTÁRIO (cada item vindo do banco vira uma cópia disto) =====
+       data-slot="..." marca onde cada campo do banco entra. -->
+  <template id="tpl-item-card">
+    <article class="item-card" data-item-id="">
+      <svg class="estrela" data-quality="0" viewBox="0 0 24 24" role="img" aria-label="Qualidade"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+      <img class="item-card__img" src="assets/img/item-placeholder.svg" alt="" width="96" height="96">
+      <h3 class="item-card__nome" data-slot="nome">Nome</h3>
+      <p class="item-card__linha" data-slot="preco">Preço</p>
+      <p class="item-card__linha" data-slot="tipo">Tipo</p>
+    </article>
+  </template>
+
+  <!-- ===== MODELO DE ITEM DO HISTÓRICO DE VENDAS ===== -->
+  <template id="tpl-historico-item">
+    <li class="historico-item" data-item-id="">
+      <img class="historico-item__img" src="assets/img/item-placeholder.svg" alt="" width="68" height="68">
+      <div class="historico-item__dados">
+        <h3 data-slot="nome">Nome</h3>
+        <p data-slot="tipo">Tipo</p>
+        <p data-slot="preco">Preço</p>
+      </div>
+      <svg class="estrela" data-quality="0" viewBox="0 0 24 24" role="img" aria-label="Qualidade"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
+    </li>
+  </template>
+
+  <script src="js/menu.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/perfil.js"></script>
+</body>
+</html>

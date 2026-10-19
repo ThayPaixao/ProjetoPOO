@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar – Stardew Valley</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="tela-auth">
+  <main>
+    <!-- action/method/name já prontos para o back-end (rota sugerida: POST /api/login) -->
+    <form class="painel-madeira form" data-auth="login" action="/api/login" method="post">
+      <h1 class="sr-only">Entrar na conta</h1>
+
+      <div class="campo">
+        <input class="campo__input" type="email" id="email" name="email" placeholder=" " autocomplete="email" required>
+        <label class="campo__label" for="email">E-mail</label>
+      </div>
+
+      <div class="campo">
+        <input class="campo__input" type="password" id="senha" name="senha" placeholder=" " autocomplete="current-password" required>
+        <label class="campo__label" for="senha">Senha</label>
+      </div>
+
+      <p class="form__mensagem" role="alert"></p>
+
+      <div class="form__acoes">
+        <a class="link" href="register.html">Registre-se</a>
+        <a class="btn btn--quadrado" href="index.html" aria-label="Voltar">&larr;</a>
+        <button class="btn btn--ok btn--quadrado" type="submit">ok</button>
+      </div>
+    </form>
+  </main>
+  <script src="js/auth.js"></script>
+</body>
+</html>
