@@ -1,0 +1,4 @@
+# senha do banco
+.env
+# configurações locais do Claude
+.claude/

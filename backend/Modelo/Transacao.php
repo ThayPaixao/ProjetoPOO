@@ -34,6 +34,15 @@ abstract class Transacao
             $this->getTipo(), $this->unidade->descricao(), $this->getValor(), $this->npc->getNome());
     }
 
+    /* Usado pelo banco depois de salvar. Só pode ser chamado uma vez. */
+    public function definirId(int $id): void
+    {
+        if ($this->id !== null) {
+            throw new LogicException('Esta transação já tem id.');
+        }
+        $this->id = $id;
+    }
+
     public function getId(): ?int { return $this->id; }
     public function getJogador(): Jogador { return $this->jogador; }
     public function getUnidade(): UnidadeItem { return $this->unidade; }
