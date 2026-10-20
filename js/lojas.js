@@ -60,7 +60,7 @@
     const resposta = estado.modo === 'comprar'
       ? await API.comprarItem(id, estado.npc)
       : await API.venderItem(id, estado.npc);
-    aviso.textContent = resposta.ok ? 'Pronto! (simulação — ainda sem banco de dados)' : 'Não foi possível concluir.';
+    aviso.textContent = resposta.ok ? 'Pronto!' : 'Não foi possível concluir.';
     /* TODO (banco): atualizar o dinheiro e redesenhar a lista com os dados novos */
   });
 

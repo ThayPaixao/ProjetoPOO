@@ -2,7 +2,7 @@
    Usa textContent (e não innerHTML) de propósito: evita que texto vindo do
    banco seja interpretado como HTML. */
 const Render = (() => {
-  const QUALIDADES = ['Normal', 'Bronze', 'Prata', 'Ouro'];
+  const QUALIDADES = ['Normal', 'Prata', 'Ouro', 'iridio'];
   const IMG_PADRAO = 'assets/img/item-placeholder.svg';
 
   const preco = (v) => `${Number(v).toLocaleString('pt-BR')} g`;

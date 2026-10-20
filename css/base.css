@@ -58,6 +58,11 @@ body {
   color: var(--contraste);
   background: var(--pagina-bg);
   line-height: 1.5;
+  cursor: url('../assets/img/normal.cur'), auto;
+}
+
+button:hover, a:hover {
+  cursor: url('../assets/img/pointer.cur'), auto;
 }
 
 h1, h2, h3, p, ul, figure { margin: 0; padding: 0; }
