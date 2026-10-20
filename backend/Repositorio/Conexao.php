@@ -20,6 +20,9 @@ class Conexao
             self::$pdo = new PDO($dsn, urldecode($partes['user']), urldecode($partes['pass']), [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,   // erro no SQL vira exceção
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                // O banco fica longe (cada ida e volta leva ~0,2 s), então economizamos viagens:
+                PDO::ATTR_PERSISTENT         => true,   // reaproveita a conexão entre requisições
+                PDO::ATTR_EMULATE_PREPARES   => true,   // 1 viagem por consulta (em vez de 3); os valores continuam escapados
             ]);
         }
         return self::$pdo;

@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="css/menu.css">
   <link rel="stylesheet" href="css/itens.css">
   <link rel="stylesheet" href="css/perfil.css">
-  <link rel="shortcut icon" type="image/png" href="../assets/images/icon.png">
+  <link rel="shortcut icon" type="image/png" href="assets/img/Icon.png">
 </head>
 <body>
   <!-- ===== MENU (copie este bloco em toda página interna; mude só a classe is-active) =====
@@ -63,7 +63,7 @@
               <p class="perfil__info" id="perfil-dinheiro">Money</p>
             </div>
 
-            <!-- TODO (banco): encerrar a sessão no servidor antes de ir para a tela inicial -->
+            <!-- encerra a sessão no servidor (js/perfil.js) e volta para a tela inicial -->
             <a class="btn btn--pequeno" id="btn-sair" href="index.html">sair</a>
           </header>
 
@@ -92,6 +92,7 @@
       <h3 class="item-card__nome" data-slot="nome">Nome</h3>
       <p class="item-card__linha" data-slot="preco">Preço</p>
       <p class="item-card__linha" data-slot="tipo">Tipo</p>
+      <p class="item-card__linha" data-slot="tamanho_cm">Tamanho</p>
     </article>
   </template>
 
@@ -103,6 +104,7 @@
         <h3 data-slot="nome">Nome</h3>
         <p data-slot="tipo">Tipo</p>
         <p data-slot="preco">Preço</p>
+        <p data-slot="npc">NPC</p>
       </div>
       <svg class="estrela" data-quality="0" viewBox="0 0 24 24" role="img" aria-label="Qualidade"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
     </li>

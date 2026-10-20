@@ -1,14 +1,16 @@
 /* auth.js – login e registro
-   Por enquanto NÃO existe servidor: depois de validar, só vai para a home.
-   Quando o back-end existir, descomente o bloco TODO e use a rota real. */
+   Valida no navegador, manda para a API (js/api.js) e, se der certo, vai para a home.
+   Se der errado, mostra a mensagem que o servidor devolveu (ex.: "E-mail ou senha incorretos."). */
 document.querySelectorAll('form[data-auth]').forEach(form => {
   const mensagem = form.querySelector('.form__mensagem');
+  const botao = form.querySelector('[type="submit"]');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();                       // (campos required/minlength já foram checados pelo navegador)
     mensagem.textContent = '';
+    const registro = form.dataset.auth === 'registro';
 
-    if (form.dataset.auth === 'registro') {
+    if (registro) {
       const senha = form.elements['senha'].value;
       const confirmacao = form.elements['confirmacao_senha'].value;
       if (senha !== confirmacao) {
@@ -18,16 +20,15 @@ document.querySelectorAll('form[data-auth]').forEach(form => {
       }
     }
 
-    /* TODO (banco de dados): enviar os dados para a API
     const dados = Object.fromEntries(new FormData(form));
-    const resp = await fetch(form.getAttribute('action'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dados),
-    });
-    if (!resp.ok) { mensagem.textContent = 'E-mail ou senha incorretos.'; return; }
-    */
+    botao.disabled = true;                    // evita enviar duas vezes
+    const resposta = registro ? await API.registrar(dados) : await API.entrar(dados);
+    botao.disabled = false;
 
+    if (!resposta.ok) {
+      mensagem.textContent = resposta.erro;
+      return;
+    }
     window.location.href = 'home.html';
   });
 });

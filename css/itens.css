@@ -34,11 +34,15 @@
 .item-card__acao { margin-top: .2rem; width: 100%; }
 .item-card .estrela { position: absolute; top: .2rem; right: .2rem; }
 
-/* ---------- Estrela de qualidade (data-quality: 0 normal, 1 bronze, 2 prata, 3 ouro) ---------- */
+/* ---------- Estrela de qualidade (data-quality: 0 normal, 1 prata, 2 ouro, 3 irídio) ---------- */
 .estrela { width: 28px; height: 28px; fill: #F5F5F5; stroke: var(--wf-borda); stroke-width: 1.2; stroke-linejoin: round; }
-.estrela[data-quality="1"] { fill: #C98A4B; }
-.estrela[data-quality="2"] { fill: #C9CFD6; }
-.estrela[data-quality="3"] { fill: #FFC21A; }
+.estrela[data-quality="1"] { fill: #C9CFD6; }
+.estrela[data-quality="2"] { fill: #FFC21A; }
+.estrela[data-quality="3"] { fill: #9B4DCA; }
+
+/* ---------- Sentimento do NPC pelo item (aba Vender) ---------- */
+[data-sentimento="Ama"]   { color: #B0175A; font-weight: 700; }
+[data-sentimento="Odeia"] { color: #6B6B6B; }
 
 /* ---------- Item do histórico de vendas ---------- */
 .historico-item {

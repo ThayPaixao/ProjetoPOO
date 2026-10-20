@@ -1,6 +1,6 @@
 /* lojas.js – abas Comprar/Vender, lista de NPCs (muda conforme a aba) e botões de ação */
 (() => {
-  const estado = { modo: 'comprar', npc: null };
+  const estado = { modo: 'comprar', npc: null, pedido: 0 };
 
   const grade = document.getElementById('loja-itens');
   const aviso = document.getElementById('loja-aviso');
@@ -25,21 +25,34 @@
     listaNpcs.scrollTop = 0;
   }
 
+  /* Comprar: catálogo do vendedor. Vender: seu inventário com o preço que ESTE NPC paga. */
   async function desenhar() {
     const comprando = estado.modo === 'comprar';
-    const itens = comprando ? await API.getItensLoja(estado.npc) : await API.getInventario();
-    Render.lista(grade, itens, 'tpl-item-card', {
-      textoAcao: comprando ? 'Comprar' : 'Vender',
-      vazio: comprando ? 'Esta loja não tem itens.' : 'Você não tem nada para vender.',
-    });
+    const pedido = ++estado.pedido;          // se trocar de NPC/aba antes de chegar, esta resposta é ignorada
+    Render.lista(grade, [], 'tpl-item-card', { vazio: 'Carregando…' });   // tira os itens antigos na hora
+    try {
+      const itens = comprando ? await API.getItensLoja(estado.npc) : await API.getOfertas(estado.npc);
+      if (pedido !== estado.pedido) return;
+      Render.lista(grade, itens, 'tpl-item-card', {
+        textoAcao: comprando ? 'Comprar' : 'Vender',
+        vazio: comprando ? 'Esta loja não tem itens.' : 'Você não tem nada para vender.',
+        prefixoPreco: comprando ? 'a partir de ' : '',     // qualidade (e tamanho do peixe) são sorteados na compra
+      });
+    } catch (erro) {
+      aviso.textContent = erro.message;
+    }
   }
 
   abas.forEach(aba => aba.addEventListener('click', async () => {
     estado.modo = aba.dataset.modo;
     abas.forEach(a => a.setAttribute('aria-selected', String(a === aba)));
     aviso.textContent = '';
-    await carregarNpcs();
-    desenhar();
+    try {
+      await carregarNpcs();
+      desenhar();
+    } catch (erro) {
+      aviso.textContent = erro.message;
+    }
   }));
 
   /* um listener para todos os NPCs (os botões são recriados a cada troca de aba) */
@@ -57,17 +70,31 @@
     const botao = e.target.closest('[data-acao]');
     if (!botao) return;
     const id = botao.closest('.item-card').dataset.itemId;
-    const resposta = estado.modo === 'comprar'
-      ? await API.comprarItem(id, estado.npc)
-      : await API.venderItem(id, estado.npc);
-    aviso.textContent = resposta.ok ? 'Pronto!' : 'Não foi possível concluir.';
-    /* TODO (banco): atualizar o dinheiro e redesenhar a lista com os dados novos */
+    const { modo, npc } = estado;                            // guarda onde o clique aconteceu
+    botao.disabled = true;                                   // evita clique duplo
+    aviso.textContent = modo === 'comprar' ? 'Comprando…' : 'Vendendo…';
+    const resposta = modo === 'comprar' ? await API.comprarItem(id, npc) : await API.venderItem(id, npc);
+
+    if (!resposta.ok) {
+      aviso.textContent = resposta.erro;                     // ex.: "Saldo insuficiente: ..."
+      botao.disabled = false;
+      return;
+    }
+    // compra: "Compra: Atum (Prata, 34 cm) por 168 g (Willy)" | venda: fala do NPC + resumo
+    aviso.textContent = resposta.fala ? `“${resposta.fala}” ${resposta.mensagem}` : resposta.mensagem;
+    dinheiro.textContent = Render.preco(resposta.dinheiro);
+    if (modo === 'vender' && estado.modo === 'vender' && estado.npc === npc) desenhar();   // o item vendido sai da lista
+    else botao.disabled = false;
   });
 
   (async () => {
-    const usuario = await API.getUsuario();
-    dinheiro.textContent = Render.preco(usuario.dinheiro);
-    await carregarNpcs();
-    desenhar();
+    try {
+      const usuario = await API.getUsuario();
+      dinheiro.textContent = Render.preco(usuario.dinheiro);
+      await carregarNpcs();
+      desenhar();
+    } catch (erro) {
+      aviso.textContent = erro.message;
+    }
   })();
 })();
