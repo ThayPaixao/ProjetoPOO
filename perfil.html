@@ -12,6 +12,9 @@
   <link rel="stylesheet" href="css/menu.css">
   <link rel="stylesheet" href="css/itens.css">
   <link rel="stylesheet" href="css/perfil.css">
+  <link rel="stylesheet" href="css/popup.css">
+  <link rel="stylesheet" href="css/foto.css">
+  <link rel="shortcut icon" type="image/png" href="assets/img/Icon.png">
 </head>
 <body>
   <!-- ===== MENU (copie este bloco em toda página interna; mude só a classe is-active) =====
@@ -62,8 +65,12 @@
               <p class="perfil__info" id="perfil-dinheiro">Money</p>
             </div>
 
-            <!-- TODO (banco): encerrar a sessão no servidor antes de ir para a tela inicial -->
-            <a class="btn btn--pequeno" id="btn-sair" href="index.html">sair</a>
+            <div class="perfil__botoes">
+              <!-- abre a janela de editar perfil (js/perfil.js) -->
+              <button class="btn btn--pequeno" id="btn-editar" type="button">editar</button>
+              <!-- encerra a sessão no servidor (js/perfil.js) e volta para a tela inicial -->
+              <a class="btn btn--pequeno" id="btn-sair" href="index.html">sair</a>
+            </div>
           </header>
 
           <section class="inventario" aria-labelledby="inventario-titulo">
@@ -82,6 +89,47 @@
     </main>
   </div>
 
+  <!-- ===== EDITAR PERFIL (js/perfil.js): foto, nome e senha. O e-mail não muda. ===== -->
+  <dialog class="popup" id="editar-perfil" aria-labelledby="editar-titulo">
+    <form class="form editar" id="form-perfil">
+      <h2 class="editar__titulo" id="editar-titulo">Editar perfil</h2>
+
+      <div class="foto-perfil">
+        <input class="sr-only" type="file" id="foto" name="foto" accept="image/*">
+        <label class="foto-perfil__circulo" for="foto" title="Trocar foto de perfil">
+          <img class="foto-perfil__img" id="foto-previa" src="assets/img/avatar-placeholder.svg" alt="Foto de perfil">
+          <span class="foto-perfil__lapis" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/></svg></span>
+          <span class="sr-only">Trocar foto de perfil</span>
+        </label>
+      </div>
+
+      <div class="campo">
+        <input class="campo__input" type="text" id="nome" name="nome" placeholder=" " maxlength="40" autocomplete="nickname" required>
+        <label class="campo__label" for="nome">Nome</label>
+      </div>
+
+      <p class="editar__subtitulo">Trocar senha (opcional)</p>
+      <div class="campo">
+        <input class="campo__input" type="password" id="senha_atual" name="senha_atual" placeholder=" " autocomplete="current-password">
+        <label class="campo__label" for="senha_atual">Senha atual</label>
+      </div>
+      <div class="campo">
+        <input class="campo__input" type="password" id="nova_senha" name="nova_senha" placeholder=" " minlength="6" autocomplete="new-password">
+        <label class="campo__label" for="nova_senha">Nova senha</label>
+      </div>
+      <div class="campo">
+        <input class="campo__input" type="password" id="confirmacao_senha" name="confirmacao_senha" placeholder=" " minlength="6" autocomplete="new-password">
+        <label class="campo__label" for="confirmacao_senha">Confirmar nova senha</label>
+      </div>
+
+      <p class="form__mensagem" role="alert"></p>
+      <div class="popup__acoes">
+        <button class="btn btn--pequeno" type="button" data-fechar>Cancelar</button>
+        <button class="btn btn--ok btn--pequeno" type="submit">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
   <!-- ===== MODELO DE ITEM DO INVENTÁRIO (cada item vindo do banco vira uma cópia disto) =====
        data-slot="..." marca onde cada campo do banco entra. -->
   <template id="tpl-item-card">
@@ -91,6 +139,7 @@
       <h3 class="item-card__nome" data-slot="nome">Nome</h3>
       <p class="item-card__linha" data-slot="preco">Preço</p>
       <p class="item-card__linha" data-slot="tipo">Tipo</p>
+      <p class="item-card__linha" data-slot="tamanho_cm">Tamanho</p>
     </article>
   </template>
 
@@ -102,6 +151,8 @@
         <h3 data-slot="nome">Nome</h3>
         <p data-slot="tipo">Tipo</p>
         <p data-slot="preco">Preço</p>
+        <p data-slot="npc">NPC</p>
+        <p data-slot="sentimento">Sentimento</p>
       </div>
       <svg class="estrela" data-quality="0" viewBox="0 0 24 24" role="img" aria-label="Qualidade"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9z"/></svg>
     </li>
@@ -110,6 +161,7 @@
   <script src="js/menu.js"></script>
   <script src="js/api.js"></script>
   <script src="js/render.js"></script>
+  <script src="js/foto.js"></script>
   <script src="js/perfil.js"></script>
 </body>
 </html>

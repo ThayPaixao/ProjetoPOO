@@ -1,23 +1,47 @@
 /* ==========================================================
    home.css  –  tela inicial (depois do login)
-   Blocos cinza = placeholders. Troque o texto/ imagem quando tiver o conteúdo.
+   Caixas de texto azul-claras (Figma), céu com nuvens e montanhas no fim.
    ========================================================== */
+
+/* céu: degradê do azul (topo) ao verde-água (perto das montanhas), com nuvens espalhadas no começo */
+body.tela-home {
+  background:
+    url("../assets/img/nuvem-2.png") no-repeat 6% 150px / 150px auto,
+    url("../assets/img/nuvem-1.png") no-repeat 96% 420px / 300px auto,
+    url("../assets/img/nuvem-2.png") no-repeat 90% 40px / 110px auto,
+    url("../assets/img/nuvem-1.png") no-repeat 2% 820px / 260px auto,
+    url("../assets/img/nuvem-2.png") no-repeat 97% 1280px / 170px auto,
+    url("../assets/img/nuvem-1.png") no-repeat 4% 1700px / 240px auto,
+    linear-gradient(to bottom, #1E8BEF 0%, #46B4F3 30%, #7FDDF3 65%, #BDF4EA 100%);
+}
+.home__montanhas { display: block; width: 100%; height: auto; margin-top: -2rem; }
 .home { display: flex; flex-direction: column; gap: clamp(3rem, 8vw, 6.5rem); padding-bottom: 4rem; }
 
 .bloco {
+  /* cores das caixas (Figma): troque aqui */
+  --bloco-fundo: rgba(173, 216, 250, .78);   /* azul-claro translúcido */
+  --bloco-borda: rgba(255, 255, 255, .85);
+  --bloco-titulo: var(--verde-primaria);
+
   width: min(100%, 520px);
-  min-height: 260px;
-  padding: 1rem 1.25rem 1.5rem;
-  background: var(--cinza-placeholder);
+  padding: 1.1rem 1.5rem 1.4rem;
+  background: var(--bloco-fundo);
+  border: 3px solid var(--bloco-borda);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(30, 80, 120, .12);
 }
-.bloco__titulo { margin-bottom: .75rem; font-size: 1.25rem; font-weight: 400; text-align: center; }
-.bloco__texto { font-size: .95rem; text-align: left; max-width: 62ch; }
+.bloco__titulo { margin-bottom: .85rem; font-size: 1.15rem; font-weight: 600; text-align: center; color: var(--bloco-titulo); }
+.bloco__texto  { font-size: .95rem; line-height: 1.45; text-align: center; color: var(--contraste); }
+.bloco strong  { font-weight: 700; }
+
+.bloco__lista { display: grid; gap: .9rem; padding-left: 1.2rem; font-size: .95rem; line-height: 1.45; color: var(--contraste); list-style: disc; }
 
 .bloco--esq    { align-self: flex-start; }
 .bloco--dir    { align-self: flex-end; }
-.bloco--centro { align-self: center; width: min(100%, 434px); min-height: 240px; }
+.bloco--centro { align-self: center; width: min(100%, 500px); }
+.bloco--largo  { align-self: center; width: min(100%, 900px); }
 
 @media (max-width: 600px) {
   .bloco { width: 88%; }
-  .bloco--centro { width: 100%; }
+  .bloco--centro, .bloco--largo { width: 100%; }
 }

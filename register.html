@@ -10,11 +10,14 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/auth.css">
+  <link rel="stylesheet" href="css/popup.css">
+  <link rel="stylesheet" href="css/foto.css">
+  <link rel="shortcut icon" type="image/png" href="assets/img/Icon.png">
 </head>
 <body class="tela-auth">
   <main>
     <!-- rota sugerida: POST /api/registro -->
-    <form class="painel-madeira form" data-auth="registro" action="/api/registro" method="post">
+    <form class="painel-madeira form" data-auth="registro" action="/api/registro" method="post" enctype="multipart/form-data">
       <h1 class="sr-only">Criar conta</h1>
 
       <div class="campo">
@@ -37,6 +40,16 @@
         <label class="campo__label" for="confirmacao_senha">Confirmação da Senha</label>
       </div>
 
+      <!-- foto de perfil (opcional): clique no círculo para escolher e ajustar (js/foto.js) -->
+      <div class="foto-perfil">
+        <input class="sr-only" type="file" id="foto" name="foto" accept="image/*">
+        <label class="foto-perfil__circulo" for="foto" title="Escolher foto de perfil (opcional)">
+          <img class="foto-perfil__img" id="foto-previa" src="assets/img/avatar-placeholder.svg" alt="Foto de perfil">
+          <span class="foto-perfil__lapis" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/></svg></span>
+          <span class="sr-only">Escolher foto de perfil (opcional)</span>
+        </label>
+      </div>
+
       <p class="form__mensagem" role="alert"></p>
 
       <div class="form__acoes">
@@ -46,6 +59,8 @@
       </div>
     </form>
   </main>
+  <script src="js/api.js"></script>
+  <script src="js/foto.js"></script>
   <script src="js/auth.js"></script>
 </body>
 </html>

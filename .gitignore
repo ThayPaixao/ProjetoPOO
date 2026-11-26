@@ -1,0 +1,6 @@
+# senha do banco
+.env
+# configurações locais do Claude
+.claude/
+# fotos de perfil enviadas pelos jogadores
+uploads/
