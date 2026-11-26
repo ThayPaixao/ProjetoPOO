@@ -40,21 +40,7 @@ class Controlador
             throw new DadosInvalidosException('As senhas não são iguais.');
         }
         $jogador = Jogador::registrar($this->texto('nome'), $this->texto('email'), $this->texto('senha'));   // valida antes de gravar qualquer arquivo
-
-        $foto = null;
-        $arquivo = $this->arquivos['foto'] ?? null;
-        if (is_array($arquivo) && ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
-            $foto = $this->fotos->salvar($arquivo);
-            $jogador->definirFoto($foto);
-        }
-        try {
-            $this->jogadores->inserir($jogador);
-        } catch (Throwable $erro) {
-            if ($foto !== null) {
-                $this->fotos->apagar($foto);      // o cadastro falhou: não deixa a foto sobrando na pasta
-            }
-            throw $erro;
-        }
+        $this->gravarComFoto($jogador, fn() => $this->jogadores->inserir($jogador));
         $this->iniciarSessao($jogador);
         return ['ok' => true, 'usuario' => $jogador->paraArray()];
     }
@@ -134,20 +120,7 @@ class Controlador
             $jogador->alterarSenha($this->texto('senha_atual'), $this->texto('nova_senha'));
         }
         $fotoAntiga = $jogador->getFoto();
-        $fotoNova = null;
-        $arquivo = $this->arquivos['foto'] ?? null;
-        if (is_array($arquivo) && ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
-            $fotoNova = $this->fotos->salvar($arquivo);
-            $jogador->definirFoto($fotoNova);
-        }
-        try {
-            $this->jogadores->atualizarPerfil($jogador);
-        } catch (Throwable $erro) {
-            if ($fotoNova !== null) {
-                $this->fotos->apagar($fotoNova);
-            }
-            throw $erro;
-        }
+        $fotoNova = $this->gravarComFoto($jogador, fn() => $this->jogadores->atualizarPerfil($jogador));
         if ($fotoNova !== null && $fotoAntiga !== null) {
             $this->fotos->apagar($fotoAntiga);        // a foto velha não é mais usada
         }
@@ -262,6 +235,28 @@ class Controlador
             $this->pdo->rollBack();
             throw $erro;
         }
+    }
+
+    /* Usado no registro e na edição do perfil. Se veio uma foto no formulário, grava no disco e
+       coloca no jogador; depois roda $gravar (que salva o jogador no banco). Se o banco falhar,
+       apaga a foto nova, para não deixar arquivo sobrando na pasta. Devolve a foto nova (ou null). */
+    private function gravarComFoto(Jogador $jogador, callable $gravar): ?string
+    {
+        $foto = null;
+        $arquivo = $this->arquivos['foto'] ?? null;
+        if (is_array($arquivo) && ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
+            $foto = $this->fotos->salvar($arquivo);
+            $jogador->definirFoto($foto);
+        }
+        try {
+            $gravar();
+        } catch (Throwable $erro) {
+            if ($foto !== null) {
+                $this->fotos->apagar($foto);
+            }
+            throw $erro;
+        }
+        return $foto;
     }
 
     private function iniciarSessao(Jogador $jogador): void

@@ -8,18 +8,20 @@ declare(strict_types=1);
                  na volta, o JSON vira objetos de novo (UnidadeItem::deArray, Item::criar).
    ENTRADA/SAÍDA + TRATAMENTO DE ERROS: grava num arquivo temporário e troca de nome no fim
    (se der erro no meio, o save antigo continua inteiro); arquivo corrompido não derruba o site. */
-class SaveRepositorio
+class SaveRepositorio extends RepositorioArquivo
 {
     private const PASTA = 'saves';
     private const VERSAO = 1;
 
+    protected function pasta(): string
+    {
+        return self::PASTA;
+    }
+
     /** @param Colecao<UnidadeItem> $inventario  @param array[] $vendas */
     public function salvar(Jogador $jogador, Colecao $inventario, array $vendas): array
     {
-        $pasta = self::raiz() . '/' . self::PASTA;
-        if (!is_dir($pasta) && !mkdir($pasta, 0775, true)) {
-            throw new RuntimeException("Não foi possível criar a pasta $pasta.");
-        }
+        $this->garantirPasta();
         $agora = new DateTimeImmutable();
         $save = [
             'versao'     => self::VERSAO,
@@ -75,11 +77,6 @@ class SaveRepositorio
 
     private function caminho(int $idJogador): string
     {
-        return self::raiz() . '/' . self::PASTA . "/jogador-$idJogador.json";
-    }
-
-    private static function raiz(): string
-    {
-        return dirname(__DIR__, 2);
+        return $this->caminhoNoDisco("jogador-$idJogador.json");
     }
 }
