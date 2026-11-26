@@ -6,6 +6,7 @@
   const aviso = document.getElementById('loja-aviso');
   const dinheiro = document.getElementById('loja-dinheiro');
   const listaNpcs = document.getElementById('npcs-lista');
+  const sprite = document.getElementById('npc-sprite');
   const abas = document.querySelectorAll('.aba');
 
   /* Monta os botões de NPC da aba atual e seleciona o primeiro */
@@ -17,26 +18,35 @@
       btn.className = 'npc';
       btn.type = 'button';
       btn.dataset.npc = npc.id;
+      btn.dataset.imagem = npc.imagem ?? '';
       btn.textContent = npc.nome;
       btn.setAttribute('aria-pressed', String(i === 0));
       listaNpcs.append(btn);
     });
     estado.npc = npcs[0]?.id ?? null;
     listaNpcs.scrollTop = 0;
+    mostrarRetrato(listaNpcs.querySelector('.npc'));
   }
 
-  /* Comprar: catálogo do vendedor. Vender: seu inventário com o preço que ESTE NPC paga. */
+  /* Mostra o retrato do NPC selecionado no quadro da esquerda */
+  function mostrarRetrato(btn) {
+    sprite.src = btn?.dataset.imagem || 'assets/img/npc-placeholder.svg';
+    sprite.alt = btn ? `Retrato de ${btn.textContent}` : '';
+  }
+
+  /* Comprar: catálogo do vendedor. Vender: seu inventário com o que você pagou.
+     Como no jogo, você só descobre o que o NPC sente pelo item na hora de vender. */
   async function desenhar() {
     const comprando = estado.modo === 'comprar';
     const pedido = ++estado.pedido;          // se trocar de NPC/aba antes de chegar, esta resposta é ignorada
     Render.lista(grade, [], 'tpl-item-card', { vazio: 'Carregando…' });   // tira os itens antigos na hora
     try {
-      const itens = comprando ? await API.getItensLoja(estado.npc) : await API.getOfertas(estado.npc);
+      const itens = comprando ? await API.getItensLoja(estado.npc) : await API.getInventario();
       if (pedido !== estado.pedido) return;
       Render.lista(grade, itens, 'tpl-item-card', {
         textoAcao: comprando ? 'Comprar' : 'Vender',
         vazio: comprando ? 'Esta loja não tem itens.' : 'Você não tem nada para vender.',
-        prefixoPreco: comprando ? 'a partir de ' : '',     // qualidade (e tamanho do peixe) são sorteados na compra
+        prefixoPreco: comprando ? 'a partir de ' : 'pagou ',   // na compra, qualidade (e tamanho do peixe) são sorteados
       });
     } catch (erro) {
       aviso.textContent = erro.message;
@@ -61,6 +71,7 @@
     if (!btn) return;
     estado.npc = btn.dataset.npc;
     listaNpcs.querySelectorAll('.npc').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    mostrarRetrato(btn);
     aviso.textContent = '';
     desenhar();
   });

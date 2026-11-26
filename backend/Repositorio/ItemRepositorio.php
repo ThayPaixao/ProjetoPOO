@@ -18,7 +18,7 @@ class ItemRepositorio
     /** @return Item[] */
     public function listarPorLoja(int $idLoja): array
     {
-        $consulta = $this->pdo->prepare(self::SELECT . ' WHERE i.id_loja = ? ORDER BY i.id_item');
+        $consulta = $this->pdo->prepare(self::SELECT . ' WHERE i.id_loja = ? ORDER BY i.nome');
         $consulta->execute([$idLoja]);
         return array_map([self::class, 'criarDaLinha'], $consulta->fetchAll());
     }

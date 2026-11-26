@@ -68,6 +68,14 @@ class Jogador
         $this->saldo += $valor;
     }
 
+    public function definirFoto(string $caminho): void
+    {
+        if (trim($caminho) === '') {
+            throw new InvalidArgumentException('Caminho da foto vazio.');
+        }
+        $this->foto = $caminho;
+    }
+
     /* Usado pelo banco depois de salvar o jogador novo. Só pode ser chamado uma vez. */
     public function definirId(int $id): void
     {

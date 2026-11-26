@@ -61,8 +61,8 @@
         <!-- NPCs -->
         <section class="npcs" aria-label="Vendedores">
           <div class="npcs__sprite">
-            <!-- TODO: trocar pelo sprite do NPC selecionado -->
-            <img id="npc-sprite" src="assets/img/npc-placeholder.svg" alt="Sprite do vendedor" width="172" height="172">
+            <!-- retrato do NPC selecionado (js/lojas.js) -->
+            <img id="npc-sprite" src="assets/img/npc-placeholder.svg" alt="" width="172" height="172">
           </div>
           <!-- os botões dos NPCs entram aqui (js/lojas.js, dados em api.js → getNpcs) -->
           <div class="npcs__lista" id="npcs-lista"></div>
@@ -86,7 +86,6 @@
       <p class="item-card__linha" data-slot="preco">Preço</p>
       <p class="item-card__linha" data-slot="tipo">Tipo</p>
       <p class="item-card__linha" data-slot="tamanho_cm">Tamanho</p>
-      <p class="item-card__linha" data-slot="sentimento">Sentimento</p>
       <button class="btn btn--pequeno item-card__acao" type="button" data-acao>Comprar</button>
     </article>
   </template>

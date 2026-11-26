@@ -9,7 +9,7 @@ perfil.html     perfil + inventário + histórico de vendas
 lojas.html      comprar (NPCs) e vender
 css/            base, components, auth, menu, home, itens, perfil, lojas
 js/             menu, auth, api (fala com o back-end), render (templates), perfil, lojas
-assets/img/     placeholders (troque pelos arquivos reais)
+assets/img/     itens/ (254 imagens) e npcs/ (10 retratos) do jogo + placeholders
 
 api/index.php   API: recebe as chamadas do js/api.js e devolve JSON
 backend/        classes PHP (POO)
@@ -19,8 +19,9 @@ backend/        classes PHP (POO)
   Repositorio/    conexão com o banco e as consultas SQL
   Controle/       Controlador: uma função para cada rota da API
   demo.php        mostra herança/polimorfismo/encapsulamento no terminal
-database/       schema.sql (tabelas) e seed.sql (itens, NPCs e gostos) para o Supabase
+database/       schema.sql (tabelas), seed.sql (254 itens, NPCs e gostos) e GOSTOS.md (quem ama/odeia o quê)
 router.php      roteador do servidor do PHP
+uploads/fotos/  fotos de perfil enviadas no cadastro (criada sozinha; não vai para o GitHub)
 ```
 
 ## Para abrir
@@ -39,6 +40,7 @@ Outros comandos:
 - Na compra, a **qualidade** é sorteada (Normal 50%, Prata 30%, Ouro 15%, Irídio 5%) e multiplica o preço
   (×1, ×1,25, ×1,5, ×2). O **peixe** também sorteia o tamanho (10 a 50 cm): +2 g por cm acima de 10.
 - Na venda, o NPC paga em cima do que **você pagou**: ama = +50%, neutro = igual, odeia = −25%.
+  Como no jogo, o site não mostra o gosto antes: você descobre vendendo (e o histórico do perfil lembra).
 - Todo jogador começa com 1000 g.
 
 ## API (usada pelo `js/api.js`)
@@ -49,7 +51,6 @@ Outros comandos:
 | `GET /api/usuario/inventario`, `/vendas`, `/historico` | itens do jogador |
 | `GET /api/lojas/npcs?modo=comprar\|vender` | vendedores ou clientes |
 | `GET /api/lojas/:npc/itens` | catálogo do vendedor |
-| `GET /api/lojas/:npc/ofertas` | seu inventário com o preço que esse NPC paga |
 | `POST /api/lojas/:npc/comprar` e `/vender` | `{ itemId }` |
 
 Erros voltam como `{ ok: false, erro: "mensagem" }`.
@@ -66,5 +67,7 @@ Erros voltam como `{ ok: false, erro: "mensagem" }`.
 - Todas as telas buscam dados **só** em `js/api.js`.
 - Itens usam `<template>` (em `perfil.html` e `lojas.html`); `data-slot="campo"` marca onde cada campo entra
   (campo que o item não tem, como `tamanho_cm` fora dos peixes, fica escondido).
-- Modelo de item: `{ id, nome, preco, tipo, qualidade (0-3), imagem, tamanho_cm }`
-  (+ `sentimento` e `preco_pago` na aba Vender).
+- Modelo de item: `{ id, nome, preco, tipo, qualidade (0-3), imagem, tamanho_cm }`.
+
+## Créditos
+Imagens dos itens e retratos dos NPCs: [Stardew Valley Wiki](https://stardewvalleywiki.com/) — Stardew Valley © ConcernedApe. Uso apenas educacional.

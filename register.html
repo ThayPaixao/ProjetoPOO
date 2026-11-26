@@ -15,7 +15,7 @@
 <body class="tela-auth">
   <main>
     <!-- rota sugerida: POST /api/registro -->
-    <form class="painel-madeira form" data-auth="registro" action="/api/registro" method="post">
+    <form class="painel-madeira form" data-auth="registro" action="/api/registro" method="post" enctype="multipart/form-data">
       <h1 class="sr-only">Criar conta</h1>
 
       <div class="campo">
@@ -36,6 +36,13 @@
       <div class="campo">
         <input class="campo__input" type="password" id="confirmacao_senha" name="confirmacao_senha" placeholder=" " autocomplete="new-password" minlength="6" required>
         <label class="campo__label" for="confirmacao_senha">Confirmação da Senha</label>
+      </div>
+
+      <!-- foto de perfil (opcional): prévia no círculo, o arquivo vai junto com o formulário -->
+      <div class="campo-foto">
+        <img class="campo-foto__previa" id="foto-previa" src="assets/img/avatar-placeholder.svg" alt="" width="64" height="64">
+        <input class="sr-only" type="file" id="foto" name="foto" accept="image/png,image/jpeg,image/webp,image/gif">
+        <label class="campo-foto__botao" for="foto">Escolher foto de perfil (opcional)</label>
       </div>
 
       <p class="form__mensagem" role="alert"></p>

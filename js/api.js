@@ -9,13 +9,15 @@
      tamanho_cm (só peixe; null nos outros) }
    ========================================================== */
 const API = (() => {
-  /* Faz a requisição para api/<rota> e devolve { status, dados }. Nunca lança erro. */
+  /* Faz a requisição para api/<rota> e devolve { status, dados }. Nunca lança erro.
+     corpo: um objeto (vai como JSON) ou um FormData (formulário com arquivo, ex.: foto do registro). */
   async function requisitar(metodo, rota, corpo) {
+    const formulario = corpo instanceof FormData;
     try {
       const resp = await fetch(`api/${rota}`, {
         method: metodo,
-        headers: corpo ? { 'Content-Type': 'application/json' } : undefined,
-        body: corpo ? JSON.stringify(corpo) : undefined,
+        headers: corpo && !formulario ? { 'Content-Type': 'application/json' } : undefined,
+        body: formulario ? corpo : (corpo ? JSON.stringify(corpo) : undefined),
       });
       const dados = await resp.json().catch(() => ({ ok: false, erro: 'Resposta inválida do servidor.' }));
       return { status: resp.status, dados };
@@ -46,7 +48,7 @@ const API = (() => {
     /* POST /api/login      { email, senha } */
     async entrar(dados) { return enviar('login', dados); },
 
-    /* POST /api/registro   { nome, email, senha, confirmacao_senha } */
+    /* POST /api/registro   FormData { nome, email, senha, confirmacao_senha, foto (arquivo, opcional) } */
     async registrar(dados) { return enviar('registro', dados); },
 
     /* POST /api/logout */
@@ -71,10 +73,6 @@ const API = (() => {
 
     /* GET /api/lojas/:npc/itens  → catálogo do vendedor (preco = preço base) */
     async getItensLoja(npc) { return buscar(`${npcNaRota(npc)}/itens`); },
-
-    /* GET /api/lojas/:npc/ofertas → seu inventário com o preço que ESTE cliente paga
-       (+ preco_pago e sentimento: Ama | Neutro | Odeia) */
-    async getOfertas(npc) { return buscar(`${npcNaRota(npc)}/ofertas`); },
 
     /* POST /api/lojas/:npc/comprar   body: { itemId }  → { ok, item, mensagem, dinheiro } */
     async comprarItem(itemId, npc) { return enviar(`${npcNaRota(npc)}/comprar`, { itemId }); },

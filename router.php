@@ -3,10 +3,10 @@
        php -S localhost:8000 router.php
    e abra http://localhost:8000 no navegador.
    /api/... vai para a API; html, css, js e imagens são servidos normalmente;
-   o .env, o .git e as pastas backend/ e database/ ficam bloqueados. */
+   o .env, o .git e as pastas backend/ e database/ ficam bloqueados (e nada em uploads/ roda como PHP). */
 $caminho = rawurldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?: '/');
 
-if (preg_match('#(^|/)\.|^/(backend|database)(/|$)#', $caminho)) {
+if (preg_match('#(^|/)\.|^/(backend|database)(/|$)|^/uploads/.*\.php#i', $caminho)) {
     http_response_code(404);
     return true;
 }

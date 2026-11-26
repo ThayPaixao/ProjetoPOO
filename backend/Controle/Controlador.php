@@ -9,16 +9,20 @@ class Controlador
     private PDO $pdo;
     private array $corpo;       // dados enviados pelo front (JSON ou formulário)
     private array $consulta;    // parâmetros da URL (?modo=...)
+    private array $arquivos;    // arquivos enviados ($_FILES), ex.: a foto do registro
     private ItemRepositorio $itens;
     private NpcRepositorio $npcs;
     private JogadorRepositorio $jogadores;
     private TransacaoRepositorio $transacoes;
+    private FotoRepositorio $fotos;
 
-    public function __construct(PDO $pdo, array $corpo, array $consulta)
+    public function __construct(PDO $pdo, array $corpo, array $consulta, array $arquivos = [])
     {
         $this->pdo = $pdo;
         $this->corpo = $corpo;
         $this->consulta = $consulta;
+        $this->arquivos = $arquivos;
+        $this->fotos = new FotoRepositorio();
         $this->itens = new ItemRepositorio($pdo);
         $this->npcs = new NpcRepositorio($pdo, $this->itens);
         $this->jogadores = new JogadorRepositorio($pdo);
@@ -27,14 +31,28 @@ class Controlador
 
     // ---------- conta ----------
 
-    /* POST /api/registro   { nome, email, senha, confirmacao_senha } */
+    /* POST /api/registro   { nome, email, senha, confirmacao_senha, foto? }  (formulário com arquivo) */
     public function registrar(): array
     {
         if ($this->texto('senha') !== $this->texto('confirmacao_senha')) {
             throw new DadosInvalidosException('As senhas não são iguais.');
         }
-        $jogador = Jogador::registrar($this->texto('nome'), $this->texto('email'), $this->texto('senha'));
-        $this->jogadores->inserir($jogador);
+        $jogador = Jogador::registrar($this->texto('nome'), $this->texto('email'), $this->texto('senha'));   // valida antes de gravar qualquer arquivo
+
+        $foto = null;
+        $arquivo = $this->arquivos['foto'] ?? null;
+        if (is_array($arquivo) && ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
+            $foto = $this->fotos->salvar($arquivo);
+            $jogador->definirFoto($foto);
+        }
+        try {
+            $this->jogadores->inserir($jogador);
+        } catch (Throwable $erro) {
+            if ($foto !== null) {
+                $this->fotos->apagar($foto);      // o cadastro falhou: não deixa a foto sobrando na pasta
+            }
+            throw $erro;
+        }
         $this->iniciarSessao($jogador);
         return ['ok' => true, 'usuario' => $jogador->paraArray()];
     }
@@ -103,19 +121,6 @@ class Controlador
     {
         $vendedor = $this->npcs->buscarVendedor($idNpc);
         return array_map(fn(Item $item) => $item->paraArray(), $vendedor->getCatalogo());
-    }
-
-    /* GET /api/lojas/:npc/ofertas   → seu inventário com o preço que ESTE cliente paga */
-    public function ofertas(string $idNpc): array
-    {
-        $cliente = $this->npcs->buscarCliente($idNpc);
-        $unidades = $this->transacoes->inventario($this->idJogadorLogado());
-        return array_map(fn(UnidadeItem $unidade) => [
-            ...$unidade->paraArray(),
-            'preco'      => $cliente->oferta($unidade),
-            'preco_pago' => $unidade->getPrecoPago(),
-            'sentimento' => $cliente->sentimentoPor($unidade->getItem())->nome(),
-        ], $unidades);
     }
 
     /* POST /api/lojas/:npc/comprar   { itemId }  (id do item no catálogo) */

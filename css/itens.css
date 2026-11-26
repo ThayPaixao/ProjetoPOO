@@ -55,3 +55,6 @@
 .historico-item__dados { display: grid; gap: .2rem; margin-right: 2.2rem; }
 .historico-item__dados > * { padding: 0 .35rem; font-size: .75rem; font-weight: 400; text-align: center; background: var(--wf-bg-claro); border: 1px solid var(--wf-borda); }
 .historico-item .estrela { position: absolute; top: .6rem; right: .6rem; }
+
+/* ---------- Imagens do jogo (pixel art): ampliar sem borrar ---------- */
+.item-card__img, .historico-item__img, #npc-sprite { image-rendering: pixelated; }

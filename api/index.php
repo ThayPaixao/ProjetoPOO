@@ -16,7 +16,6 @@ const ROTAS = [
     ['GET',  '#^/usuario/historico$#',           'historico'],
     ['GET',  '#^/lojas/npcs$#',                  'npcs'],
     ['GET',  '#^/lojas/([a-z]+)/itens$#',        'itensDaLoja'],
-    ['GET',  '#^/lojas/([a-z]+)/ofertas$#',      'ofertas'],
     ['POST', '#^/lojas/([a-z]+)/comprar$#',      'comprar'],
     ['POST', '#^/lojas/([a-z]+)/vender$#',       'vender'],
 ];
@@ -29,7 +28,7 @@ function responder(array $dados, int $status = 200): never
     exit;
 }
 
-/* O front manda JSON (fetch); um <form> normal manda campos de formulário. Aceita os dois. */
+/* O front manda JSON (fetch) ou um formulário com arquivo (registro com foto). Aceita os dois. */
 function lerCorpo(): array
 {
     $json = json_decode(file_get_contents('php://input') ?: 'null', true);
@@ -45,7 +44,7 @@ $caminho = preg_replace('#^.*?/api(?=/|$)#', '', $caminho) ?: '/';
 try {
     foreach (ROTAS as [$metodo, $padrao, $acao]) {
         if ($_SERVER['REQUEST_METHOD'] === $metodo && preg_match($padrao, $caminho, $partes)) {
-            $controlador = new Controlador(Conexao::obter(), lerCorpo(), $_GET);
+            $controlador = new Controlador(Conexao::obter(), lerCorpo(), $_GET, $_FILES);
             responder($controlador->$acao(...array_slice($partes, 1)));
         }
     }
