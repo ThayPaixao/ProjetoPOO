@@ -51,6 +51,9 @@ const API = (() => {
     /* POST /api/registro   FormData { nome, email, senha, confirmacao_senha, foto (arquivo, opcional) } */
     async registrar(dados) { return enviar('registro', dados); },
 
+    /* POST /api/usuario/perfil   FormData { nome, senha_atual?, nova_senha?, confirmacao_senha?, foto? } */
+    async editarPerfil(dados) { return enviar('usuario/perfil', dados); },
+
     /* POST /api/logout */
     async sair() { return enviar('logout'); },
 

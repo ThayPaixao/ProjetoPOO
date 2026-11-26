@@ -1,0 +1,35 @@
+/* ==========================================================
+   foto.css  –  círculo da foto de perfil (com lápis) e a janela de ajuste (js/foto.js)
+   ========================================================== */
+.foto-perfil { display: flex; justify-content: center; }
+.foto-perfil__circulo { position: relative; display: block; width: 96px; height: 96px; cursor: pointer; }
+.foto-perfil__img {
+  display: block; width: 100%; height: 100%;
+  border-radius: 50%; object-fit: cover;
+  background: var(--wf-bg-claro); border: 3px solid var(--neutra);
+}
+.foto-perfil__lapis {
+  position: absolute; right: -2px; bottom: -2px;
+  display: grid; place-items: center;
+  width: 32px; height: 32px; border-radius: 50%;
+  color: #fff; background: var(--neutra); border: 3px solid var(--fundo);
+  transition: transform .12s ease;
+}
+.foto-perfil__lapis svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.foto-perfil__circulo:hover .foto-perfil__lapis { transform: scale(1.12); }
+.foto-perfil input:focus-visible + .foto-perfil__circulo { outline: 3px solid var(--neutra-escura); outline-offset: 3px; border-radius: 50%; }
+
+/* janela de ajuste */
+.foto-editor { text-align: center; }
+.foto-editor__titulo { margin-bottom: .8rem; font-weight: 700; }
+.foto-editor__janela {
+  position: relative; overflow: hidden;
+  width: 240px; height: 240px; margin: 0 auto;
+  border-radius: 50%; border: 3px solid var(--neutra); background: #222;
+  cursor: grab; touch-action: none;
+}
+.foto-editor__janela:active { cursor: grabbing; }
+.foto-editor__janela img { position: absolute; top: 0; left: 0; max-width: none; transform-origin: 0 0; user-select: none; pointer-events: none; }
+.foto-editor__zoom { display: flex; align-items: center; justify-content: center; gap: .6rem; margin-top: .9rem; font-size: .9rem; }
+.foto-editor__zoom input { width: 160px; accent-color: var(--neutra); }
+.foto-editor__dica { margin-top: .4rem; font-size: .78rem; opacity: .8; }

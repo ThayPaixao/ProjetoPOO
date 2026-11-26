@@ -77,6 +77,38 @@
     desenhar();
   });
 
+  /* ---------- pop-up de compra/venda ---------- */
+  const popup = document.getElementById('popup');
+  const VEREDITO = { Ama: 'amou isso!', Neutro: 'achou sem graça (neutro).', Odeia: 'odiou isso!' };
+  const ESTRELA = [                                         // na compra: qual estrela (qualidade) foi sorteada
+    'Qualidade normal: sem estrela desta vez.',
+    '★ Você conseguiu a estrela de Prata!',
+    '★ Você conseguiu a estrela de Ouro!',
+    '★ Uau! Você conseguiu a estrela de Irídio!',
+  ];
+
+  function mostrarPopup(modo, r) {
+    const { item, npc } = r;
+    document.getElementById('popup-retrato').src = npc?.imagem || 'assets/img/npc-placeholder.svg';
+    document.getElementById('popup-nome').textContent = npc?.nome ?? '';
+    document.getElementById('popup-fala').textContent = r.fala ?? '';
+    const veredito = document.getElementById('popup-veredito');
+    veredito.textContent = modo === 'vender' ? `${npc.nome} ${VEREDITO[r.sentimento] ?? ''}` : ESTRELA[item.qualidade] ?? '';
+    veredito.dataset.sentimento = r.sentimento ?? '';
+    veredito.dataset.qualidade = modo === 'comprar' ? item.qualidade : '';
+    document.getElementById('popup-item-img').src = item?.imagem || 'assets/img/item-placeholder.svg';
+    const detalhes = [Render.nomeQualidade(item.qualidade), item.tamanho_cm ? `${item.tamanho_cm} cm` : null].filter(Boolean).join(', ');
+    document.getElementById('popup-item-nome').textContent = `${item.nome} (${detalhes})`;
+    document.getElementById('popup-resultado').textContent = modo === 'comprar'
+      ? `Você pagou ${Render.preco(item.preco)}`
+      : `Recebeu ${Render.preco(r.valor)} (${r.lucro >= 0 ? 'lucro' : 'prejuízo'} de ${Render.preco(Math.abs(r.lucro))})`;
+    popup.showModal();
+  }
+  popup.addEventListener('click', (e) => {                // clique fora da caixa fecha
+    const r = popup.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) popup.close();
+  });
+
   /* um único listener para todos os botões "Comprar/Vender" */
   grade.addEventListener('click', async (e) => {
     const botao = e.target.closest('[data-acao]');
@@ -92,8 +124,8 @@
       botao.disabled = false;
       return;
     }
-    // compra: "Compra: Atum (Prata, 34 cm) por 168 g (Willy)" | venda: fala do NPC + resumo
-    aviso.textContent = resposta.fala ? `“${resposta.fala}” ${resposta.mensagem}` : resposta.mensagem;
+    aviso.textContent = '';
+    mostrarPopup(modo, resposta);
     dinheiro.textContent = Render.preco(resposta.dinheiro);
     if (modo === 'vender' && estado.modo === 'vender' && estado.npc === npc) desenhar();   // o item vendido sai da lista
     else botao.disabled = false;

@@ -45,6 +45,12 @@ class JogadorRepositorio
         $jogador->definirId((int) $consulta->fetchColumn());
     }
 
+    public function atualizarPerfil(Jogador $jogador): void
+    {
+        $consulta = $this->pdo->prepare('UPDATE jogador SET nome = ?, senha_hash = ?, foto = ? WHERE id_jogador = ?');
+        $consulta->execute([$jogador->getNome(), $jogador->getSenhaHash(), $jogador->getFoto(), $jogador->getId()]);
+    }
+
     public function atualizarSaldo(Jogador $jogador): void
     {
         $consulta = $this->pdo->prepare('UPDATE jogador SET saldo = ? WHERE id_jogador = ?');

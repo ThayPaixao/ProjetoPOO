@@ -25,22 +25,3 @@
   .inicio__botoes { gap: 1.25rem; }
   .inicio__botoes .btn { min-width: 130px; }
 }
-
-/* ---- Foto de perfil no registro ---- */
-.campo-foto { display: flex; align-items: center; gap: 1rem; }
-.campo-foto__previa {
-  width: 64px; height: 64px; flex: none;
-  border-radius: 50%; object-fit: cover;
-  background: var(--wf-bg-claro);
-  border: 3px solid var(--neutra);
-}
-.campo-foto__botao {
-  cursor: pointer;
-  padding: .45rem .6rem .3rem;
-  color: var(--neutra-escura);
-  border-bottom: 3px solid var(--neutra);
-  border-radius: 6px 6px 0 0;
-  transition: background-color .15s;
-}
-.campo-foto__botao:hover { background: rgba(227,121,61,.10); }
-.campo-foto input:focus-visible + .campo-foto__botao { outline: 2px solid var(--neutra-escura); outline-offset: 2px; }

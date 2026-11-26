@@ -36,6 +36,19 @@ class Vendedor extends NPC
         return array_values($this->catalogo);
     }
 
+    /* O que cada vendedor diz ao entregar a compra. */
+    private const FALAS = [
+        'pierre' => 'Ótima escolha! Fresquinho da Loja do Pierre.',
+        'gus' => 'Saindo quentinho da cozinha do Saloon! Bom apetite.',
+        'willy' => 'Fisgado hoje cedinho! Cuide bem dele, viu?',
+        'clint' => 'Hã... aqui está. Brilha bonito, né?',
+    ];
+
+    public function fala(): string
+    {
+        return self::FALAS[$this->id] ?? 'Obrigado pela compra!';
+    }
+
     public function getNomeLoja(): string
     {
         return $this->nomeLoja;

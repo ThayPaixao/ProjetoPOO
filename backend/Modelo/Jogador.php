@@ -68,6 +68,27 @@ class Jogador
         $this->saldo += $valor;
     }
 
+    public function alterarNome(string $nome): void
+    {
+        $nome = trim($nome);
+        if ($nome === '' || mb_strlen($nome) > 40) {
+            throw new DadosInvalidosException('O nome precisa ter entre 1 e 40 caracteres.');
+        }
+        $this->nome = $nome;
+    }
+
+    /* Para trocar a senha é preciso informar a atual. */
+    public function alterarSenha(string $senhaAtual, string $novaSenha): void
+    {
+        if (!$this->verificarSenha($senhaAtual)) {
+            throw new DadosInvalidosException('A senha atual está errada.');
+        }
+        if (mb_strlen($novaSenha) < self::SENHA_MINIMA) {
+            throw new DadosInvalidosException('A nova senha precisa ter pelo menos ' . self::SENHA_MINIMA . ' caracteres.');
+        }
+        $this->senhaHash = password_hash($novaSenha, PASSWORD_DEFAULT);
+    }
+
     public function definirFoto(string $caminho): void
     {
         if (trim($caminho) === '') {

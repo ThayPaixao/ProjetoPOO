@@ -11,6 +11,7 @@ const ROTAS = [
     ['POST', '#^/login$#',                       'entrar'],
     ['POST', '#^/logout$#',                      'sair'],
     ['GET',  '#^/usuario$#',                     'usuario'],
+    ['POST', '#^/usuario/perfil$#',              'editarPerfil'],
     ['GET',  '#^/usuario/inventario$#',          'inventario'],
     ['GET',  '#^/usuario/vendas$#',              'vendas'],
     ['GET',  '#^/usuario/historico$#',           'historico'],

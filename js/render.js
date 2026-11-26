@@ -16,13 +16,20 @@ const Render = (() => {
       const valor = item[campo];
       el.hidden = valor === undefined || valor === null;    // campo que o item não tem some (ex.: tamanho só em peixe)
       if (el.hidden) return;
-      if (campo === 'preco') el.textContent = prefixoPreco + preco(valor);
+      if (campo === 'preco') {
+        // "a partir de" pequeno antes do valor, para o preço caber no card
+        const pre = document.createElement('small');
+        pre.className = 'preco__prefixo';
+        pre.textContent = prefixoPreco;
+        el.replaceChildren(...(prefixoPreco ? [pre] : []), preco(valor));
+      }
       else if (campo === 'tamanho_cm') el.textContent = `${valor} cm`;
       else if (campo === 'sentimento') {
         el.textContent = SENTIMENTOS[valor] ?? valor;
         el.dataset.sentimento = valor;                      // cor no css/itens.css
       }
       else el.textContent = valor;
+      el.title = el.textContent;                            // se o texto não couber, aparece inteiro ao passar o mouse
     });
     const img = no.querySelector('img');
     if (img) img.src = item.imagem || IMG_PADRAO;
@@ -58,5 +65,7 @@ const Render = (() => {
     });
   }
 
-  return { lista, preco };
+  const nomeQualidade = (q) => QUALIDADES[q] ?? 'Normal';
+
+  return { lista, preco, nomeQualidade };
 })();

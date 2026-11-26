@@ -1,7 +1,20 @@
 /* ==========================================================
    home.css  –  tela inicial (depois do login)
-   Caixas de texto azul-claras (Figma). O fundo da página é definido à parte.
+   Caixas de texto azul-claras (Figma), céu com nuvens e montanhas no fim.
    ========================================================== */
+
+/* céu: degradê do azul (topo) ao verde-água (perto das montanhas), com nuvens espalhadas no começo */
+body.tela-home {
+  background:
+    url("../assets/img/nuvem-2.png") no-repeat 6% 150px / 150px auto,
+    url("../assets/img/nuvem-1.png") no-repeat 96% 420px / 300px auto,
+    url("../assets/img/nuvem-2.png") no-repeat 90% 40px / 110px auto,
+    url("../assets/img/nuvem-1.png") no-repeat 2% 820px / 260px auto,
+    url("../assets/img/nuvem-2.png") no-repeat 97% 1280px / 170px auto,
+    url("../assets/img/nuvem-1.png") no-repeat 4% 1700px / 240px auto,
+    linear-gradient(to bottom, #1E8BEF 0%, #46B4F3 30%, #7FDDF3 65%, #BDF4EA 100%);
+}
+.home__montanhas { display: block; width: 100%; height: auto; margin-top: -2rem; }
 .home { display: flex; flex-direction: column; gap: clamp(3rem, 8vw, 6.5rem); padding-bottom: 4rem; }
 
 .bloco {

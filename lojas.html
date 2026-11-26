@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="css/menu.css">
   <link rel="stylesheet" href="css/itens.css">
   <link rel="stylesheet" href="css/lojas.css">
+  <link rel="stylesheet" href="css/popup.css">
   <link rel="shortcut icon" type="image/png" href="assets/img/Icon.png">
 </head>
 <body>
@@ -76,6 +77,26 @@
       </div>
     </main>
   </div>
+
+  <!-- ===== POP-UP de compra/venda (preenchido por js/lojas.js) ===== -->
+  <dialog class="popup" id="popup" aria-labelledby="popup-nome">
+    <div class="popup__cabeca">
+      <img class="popup__retrato" id="popup-retrato" src="assets/img/npc-placeholder.svg" alt="" width="64" height="64">
+      <strong class="popup__nome" id="popup-nome">NPC</strong>
+    </div>
+    <p class="popup__balao" id="popup-fala"></p>
+    <p class="popup__veredito" id="popup-veredito"></p>
+    <div class="popup__item">
+      <img class="popup__item-img" id="popup-item-img" src="assets/img/item-placeholder.svg" alt="" width="40" height="40">
+      <div>
+        <p class="popup__item-nome" id="popup-item-nome"></p>
+        <p class="popup__resultado" id="popup-resultado"></p>
+      </div>
+    </div>
+    <form class="popup__acoes" method="dialog">
+      <button class="btn btn--ok btn--pequeno">OK</button>
+    </form>
+  </dialog>
 
   <!-- ===== MODELO DE ITEM (loja e venda usam o mesmo card; o botão tem data-acao) ===== -->
   <template id="tpl-item-card">

@@ -73,3 +73,6 @@
 
 /* ---------- Imagens do jogo (pixel art): ampliar sem borrar ---------- */
 .item-card__img, .historico-item__img, #npc-sprite { image-rendering: pixelated; }
+
+/* "a partir de" / "pagou" pequeno antes do preço */
+.preco__prefixo { font-size: .68em; opacity: .85; margin-right: .25em; }

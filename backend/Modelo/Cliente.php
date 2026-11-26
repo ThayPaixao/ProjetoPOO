@@ -36,8 +36,31 @@ class Cliente extends NPC
         return (int) round($unidade->getPrecoPago() * $sentimento->multiplicador());
     }
 
+    /* O que cada cliente diz ao receber o item, do jeito dele. */
+    private const FALAS = [
+        'elliott' => ['AMA' => 'Que maravilha! Isso vai inspirar o próximo capítulo do meu romance.',
+                      'NEUTRO' => 'Hm, obrigado. Vou deixar perto da minha escrivaninha.',
+                      'ODEIA' => 'Ah... não combina muito com a minha cabana, mas agradeço.'],
+        'harvey' => ['AMA' => 'Que presente ótimo! Como seu médico, aprovo totalmente.',
+                     'NEUTRO' => 'Obrigado. Sempre bom lembrar de se cuidar.',
+                     'ODEIA' => 'Hmm... isso não faz muito bem para a saúde, sabia?'],
+        'sebastian' => ['AMA' => '...Sério? Isso é muito legal. Valeu mesmo.',
+                        'NEUTRO' => 'Ah. Valeu, eu acho.',
+                        'ODEIA' => 'Eca. Por que você me daria isso?'],
+        'abigail' => ['AMA' => 'Uau! Como você sabia? Perfeito para a minha próxima aventura!',
+                      'NEUTRO' => 'Ah, legal. Obrigada!',
+                      'ODEIA' => 'Argh, que nojo! Nem pensar.'],
+        'leah' => ['AMA' => 'Que lindo! Me deu vontade de pintar agora mesmo.',
+                   'NEUTRO' => 'Obrigada. Vou achar um uso para isso.',
+                   'ODEIA' => 'Hm... prefiro coisas mais naturais, sabe?'],
+        'penny' => ['AMA' => 'Ah, que gentileza! As crianças vão adorar ver isso.',
+                    'NEUTRO' => 'Obrigada, é muito gentil da sua parte.',
+                    'ODEIA' => 'Oh... desculpa, mas isso não é para mim.'],
+    ];
+
     public function reacao(Item $item): string
     {
-        return $this->sentimentoPor($item)->fala();
+        $sentimento = $this->sentimentoPor($item);
+        return self::FALAS[$this->id][$sentimento->name] ?? $sentimento->fala();
     }
 }

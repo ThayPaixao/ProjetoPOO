@@ -78,6 +78,40 @@ class Controlador
 
     // ---------- perfil ----------
 
+    /* POST /api/usuario/perfil   FormData { nome?, senha_atual?, nova_senha?, confirmacao_senha?, foto? } */
+    public function editarPerfil(): array
+    {
+        $jogador = $this->jogadorLogado();
+        if ($this->texto('nome') !== '') {
+            $jogador->alterarNome($this->texto('nome'));
+        }
+        if ($this->texto('nova_senha') !== '') {
+            if ($this->texto('nova_senha') !== $this->texto('confirmacao_senha')) {
+                throw new DadosInvalidosException('A nova senha e a confirmação não são iguais.');
+            }
+            $jogador->alterarSenha($this->texto('senha_atual'), $this->texto('nova_senha'));
+        }
+        $fotoAntiga = $jogador->getFoto();
+        $fotoNova = null;
+        $arquivo = $this->arquivos['foto'] ?? null;
+        if (is_array($arquivo) && ($arquivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
+            $fotoNova = $this->fotos->salvar($arquivo);
+            $jogador->definirFoto($fotoNova);
+        }
+        try {
+            $this->jogadores->atualizarPerfil($jogador);
+        } catch (Throwable $erro) {
+            if ($fotoNova !== null) {
+                $this->fotos->apagar($fotoNova);
+            }
+            throw $erro;
+        }
+        if ($fotoNova !== null && $fotoAntiga !== null) {
+            $this->fotos->apagar($fotoAntiga);        // a foto velha não é mais usada
+        }
+        return ['ok' => true, 'usuario' => $jogador->paraArray()];
+    }
+
     /* GET /api/usuario   → { id, nome, dinheiro, foto } */
     public function usuario(): array
     {
@@ -138,6 +172,8 @@ class Controlador
             return [
                 'ok'       => true,
                 'item'     => $unidade->paraArray(),
+                'npc'      => $vendedor->paraArray(),
+                'fala'     => $vendedor->fala(),
                 'mensagem' => $compra->descricao(),
                 'dinheiro' => $jogador->getSaldo(),
             ];
@@ -158,9 +194,12 @@ class Controlador
             $this->transacoes->salvarVenda($venda);
             return [
                 'ok'         => true,
+                'item'       => $unidade->paraArray(),
+                'npc'        => $cliente->paraArray(),
                 'valor'      => $venda->getValor(),
+                'lucro'      => $venda->getValor() - $unidade->getPrecoPago(),
                 'sentimento' => $venda->getSentimento()->nome(),
-                'fala'       => $venda->getSentimento()->fala(),
+                'fala'       => $cliente->reacao($unidade->getItem()),
                 'mensagem'   => $venda->descricao(),
                 'dinheiro'   => $jogador->getSaldo(),
             ];
