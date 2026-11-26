@@ -5,12 +5,13 @@ declare(strict_types=1);
 class Vendedor extends NPC
 {
     private string $nomeLoja;
-    /** @var array<int, Item>  id do item => item */
-    private array $catalogo = [];
+    /** @var Colecao<Item>  id do item => item (coleção genérica: só aceita Item) */
+    private Colecao $catalogo;
 
     public function __construct(string $id, string $nome, string $nomeLoja, ?string $imagem = null)
     {
         parent::__construct($id, $nome, $imagem);
+        $this->catalogo = new Colecao(Item::class);
         $this->nomeLoja = $nomeLoja;
     }
 
@@ -22,18 +23,18 @@ class Vendedor extends NPC
     /* O vendedor só vende o que está no catálogo da loja dele. */
     public function podeNegociar(Item $item): bool
     {
-        return isset($this->catalogo[$item->getId()]);
+        return $this->catalogo->contem($item->getId());
     }
 
     public function adicionarAoCatalogo(Item $item): void
     {
-        $this->catalogo[$item->getId()] = $item;
+        $this->catalogo->adicionar($item, $item->getId());
     }
 
     /** @return Item[] */
     public function getCatalogo(): array
     {
-        return array_values($this->catalogo);
+        return $this->catalogo->paraLista();
     }
 
     /* O que cada vendedor diz ao entregar a compra. */

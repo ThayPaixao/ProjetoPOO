@@ -80,7 +80,8 @@ Erros voltam como `{ ok: false, erro: "mensagem" }`.
 | Entrada/Saída | save em arquivo, upload da foto (`FotoRepositorio`), leitura do `.env` |
 | Tratamento de erros | exceções do jogo (`backend/Excecao/`), `try/catch` da API, transação com rollback na compra/venda, save corrompido não derruba o site |
 | Padrões de projeto | **Factory** (`Item::criar`, `NpcRepositorio::criar`), **Repository** (`backend/Repositorio/`), **Singleton** (`Conexao`), **Template Method** (`Transacao::descricao()`), **Front Controller** (`api/index.php` → `Controlador`) |
-| Collections | mapas e listas: catálogo do `Vendedor` (id → Item), gostos do `Cliente` (id → Sentimento), inventário e histórico |
+| **Tipos genéricos** | `backend/Modelo/Colecao.php`: `Colecao<T>` (anotações `@template`) só aceita objetos do tipo escolhido; usada como `Colecao<Item>` (catálogo), `Colecao<Sentimento>` (gostos) e `Colecao<UnidadeItem>` (inventário) |
+| Collections | a `Colecao` (implementa `IteratorAggregate`, `Countable`, `JsonSerializable`: dá para usar em `foreach`, `count()` e `json_encode`) + mapas e listas do histórico |
 
 ## Créditos
 Imagens dos itens e retratos dos NPCs: [Stardew Valley Wiki](https://stardewvalleywiki.com/) — Stardew Valley © ConcernedApe. Uso apenas educacional.

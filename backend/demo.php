@@ -80,6 +80,20 @@ foreach ([$compra, $venda] as $transacao) {
     echo ' - ', $transacao->descricao(), PHP_EOL;
 }
 
+// ---------- TIPOS GENÉRICOS ----------
+titulo('TIPOS GENÉRICOS: Colecao<Item> só aceita Item (≈ List<Item> no Java)');
+$itens = new Colecao(Item::class, [$atum, $abobora, $biscoito, $jade]);
+printf("Colecao<%s> com %d itens: %s\n", $itens->getTipo(), count($itens),
+    implode(', ', $itens->mapear(fn(Item $i) => $i->getNome())));
+$caros = $itens->filtrar(fn(Item $i) => $i->getPrecoBase() >= 200);      // devolve outra Colecao<Item>
+printf("filtrar(preço >= 200) → Colecao<%s>: %s\n", $caros->getTipo(),
+    implode(', ', $caros->mapear(fn(Item $i) => $i->getNome())));
+try {
+    $itens->adicionar($jogador);                                           // Jogador não é Item
+} catch (InvalidArgumentException $e) {
+    echo 'Bloqueado: ', $e->getMessage(), PHP_EOL;
+}
+
 // ---------- ENCAPSULAMENTO ----------
 titulo('ENCAPSULAMENTO: o saldo só muda pelas regras da classe');
 try {

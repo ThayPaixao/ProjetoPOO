@@ -113,7 +113,7 @@ class Controlador
             'salvo_em'   => $save['salvo_em']->format(DATE_ATOM),
             'arquivo'    => $save['arquivo'],
             'dinheiro'   => $save['dinheiro'],
-            'inventario' => $save['inventario'],     // UnidadeItem[]: o json_encode usa o jsonSerialize() de cada um
+            'inventario' => $save['inventario'],     // Colecao<UnidadeItem>: o json_encode usa o jsonSerialize()
             'vendas'     => count($save['vendas']),
         ];
     }
@@ -163,8 +163,8 @@ class Controlador
     /* GET /api/usuario/inventario */
     public function inventario(): array
     {
-        $unidades = $this->transacoes->inventario($this->idJogadorLogado());
-        return array_map(fn(UnidadeItem $unidade) => $unidade->paraArray(), $unidades);
+        $unidades = $this->transacoes->inventario($this->idJogadorLogado());   // Colecao<UnidadeItem>
+        return $unidades->mapear(fn(UnidadeItem $unidade) => $unidade->paraArray());
     }
 
     /* GET /api/usuario/vendas */

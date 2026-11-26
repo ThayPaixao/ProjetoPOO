@@ -13,8 +13,8 @@ class SaveRepositorio
     private const PASTA = 'saves';
     private const VERSAO = 1;
 
-    /** @param UnidadeItem[] $inventario  @param array[] $vendas */
-    public function salvar(Jogador $jogador, array $inventario, array $vendas): array
+    /** @param Colecao<UnidadeItem> $inventario  @param array[] $vendas */
+    public function salvar(Jogador $jogador, Colecao $inventario, array $vendas): array
     {
         $pasta = self::raiz() . '/' . self::PASTA;
         if (!is_dir($pasta) && !mkdir($pasta, 0775, true)) {
@@ -25,7 +25,7 @@ class SaveRepositorio
             'versao'     => self::VERSAO,
             'salvo_em'   => $agora->format(DATE_ATOM),
             'jogador'    => $jogador,          // JsonSerializable
-            'inventario' => $inventario,       // lista de UnidadeItem (JsonSerializable)
+            'inventario' => $inventario,       // Colecao<UnidadeItem>: vira uma lista JSON (JsonSerializable)
             'vendas'     => $vendas,
         ];
         $json = json_encode($save, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
@@ -52,7 +52,8 @@ class SaveRepositorio
                 'arquivo'    => self::PASTA . '/' . basename($arquivo),
                 'nome'       => $dados['jogador']['nome'],
                 'dinheiro'   => (int) $dados['jogador']['dinheiro'],
-                'inventario' => array_map([UnidadeItem::class, 'deArray'], $dados['inventario']),   // DESSERIALIZAÇÃO
+                'inventario' => new Colecao(UnidadeItem::class,                                  // DESSERIALIZAÇÃO
+                                    array_map([UnidadeItem::class, 'deArray'], $dados['inventario'])),
                 'vendas'     => $dados['vendas'],
             ];
         } catch (JsonException | ValueError | TypeError $erro) {

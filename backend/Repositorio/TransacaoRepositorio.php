@@ -39,12 +39,12 @@ class TransacaoRepositorio
         $venda->definirId((int) $consulta->fetchColumn());
     }
 
-    /* @return UnidadeItem[]  mais recentes primeiro */
-    public function inventario(int $idJogador): array
+    /** @return Colecao<UnidadeItem>  mais recentes primeiro */
+    public function inventario(int $idJogador): Colecao
     {
         $consulta = $this->pdo->prepare(self::SELECT_UNIDADE . ' WHERE inv.id_jogador = ? ORDER BY inv.id_compra DESC');
         $consulta->execute([$idJogador]);
-        return array_map(fn(array $linha) => $this->criarUnidade($linha), $consulta->fetchAll());
+        return new Colecao(UnidadeItem::class, array_map(fn(array $linha) => $this->criarUnidade($linha), $consulta->fetchAll()));
     }
 
     /* Só acha a unidade se ela for DESTE jogador e ainda não tiver sido vendida. */

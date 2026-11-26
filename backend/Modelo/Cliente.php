@@ -5,8 +5,14 @@ declare(strict_types=1);
    O preço que ele paga depende do que ele sente pelo item. */
 class Cliente extends NPC
 {
-    /** @var array<int, Sentimento>  id do item => sentimento (só Ama e Odeia; o resto é Neutro) */
-    private array $sentimentos = [];
+    /** @var Colecao<Sentimento>  id do item => sentimento (só Ama e Odeia; o resto é Neutro) */
+    private Colecao $sentimentos;
+
+    public function __construct(string $id, string $nome, ?string $imagem = null)
+    {
+        parent::__construct($id, $nome, $imagem);
+        $this->sentimentos = new Colecao(Sentimento::class);   // coleção genérica: só aceita Sentimento
+    }
 
     public function getCategoria(): string
     {
@@ -21,12 +27,12 @@ class Cliente extends NPC
 
     public function definirSentimento(int $idItem, Sentimento $sentimento): void
     {
-        $this->sentimentos[$idItem] = $sentimento;
+        $this->sentimentos->adicionar($sentimento, $idItem);
     }
 
     public function sentimentoPor(Item $item): Sentimento
     {
-        return $this->sentimentos[$item->getId()] ?? Sentimento::NEUTRO;
+        return $this->sentimentos->obter($item->getId()) ?? Sentimento::NEUTRO;
     }
 
     /* Quanto ele paga: o que o jogador pagou × multiplicador do sentimento. */
