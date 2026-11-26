@@ -15,6 +15,14 @@
     });
   }
 
+  /* posição do item ativo: a barra recorta a "aba" transparente ali (css/menu.css) */
+  function medirAba() {
+    const ativo = menu.querySelector('.menu__item.is-active');
+    if (ativo) menu.style.setProperty('--aba-top', `${ativo.offsetTop}px`);
+  }
+  medirAba();
+  addEventListener('resize', medirAba);
+
   botoes.forEach(b => b.addEventListener('click', () => definir(!menu.classList.contains('is-open'))));
   if (fundo) fundo.addEventListener('click', () => definir(false));
   document.addEventListener('keydown', e => { if (e.key === 'Escape') definir(false); });

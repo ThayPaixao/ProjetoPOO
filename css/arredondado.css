@@ -1,0 +1,25 @@
+/* ==========================================================
+   arredondado.css  –  cantos arredondados em tudo (lojas e perfil)
+   Carregado DEPOIS dos outros CSS: só troca os cantos (e o contorno laranja das caixas de info).
+   ========================================================== */
+:root { --raio-grande: 18px; --raio: 12px; --raio-pequeno: 8px; }
+
+/* painéis grandes: o overflow: hidden faz o que está dentro acompanhar a curva */
+.loja, .perfil { border-radius: var(--raio-grande); overflow: hidden; }
+
+/* ---------- Lojas ---------- */
+.loja__dinheiro { border-radius: var(--raio-pequeno); border-color: var(--neutra); }
+.npcs__sprite img { border-radius: var(--raio); }
+.npcs__lista { gap: .5rem; padding: .6rem; }
+.npc { border-radius: var(--raio); border: 2px solid var(--wf-borda); }
+
+/* ---------- Cards de item (lojas e inventário) ---------- */
+.item-card { border-radius: var(--raio); }
+.item-card__nome, .item-card__linha { border-radius: var(--raio-pequeno); }
+
+/* ---------- Perfil ---------- */
+.perfil__foto { border-radius: var(--raio); overflow: hidden; }
+.perfil__info { border-radius: var(--raio-pequeno); border-color: var(--neutra); }   /* contorno laranja, igual aos cards */
+.inventario .grade-itens { border-radius: var(--raio); }
+.historico-item__img { border-radius: var(--raio-pequeno); }
+.historico-item__dados > * { border-radius: 6px; }

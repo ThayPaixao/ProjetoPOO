@@ -59,18 +59,32 @@ body.menu-aberto .menu-fab { top: 53px; left: 35px; box-shadow: none; }
 .menu__link:hover  { background: rgba(255,255,255,.14); }
 .menu__link:active { background: rgba(255,255,255,.26); transform: scale(.97); }
 
-/* ---------- Item ativo: "aba" branca que se funde com a página ---------- */
-.menu__item.is-active { background: var(--fundo); }
+/* ---------- Item ativo: "aba" transparente que mostra o fundo da página ----------
+   Em vez de pintar a aba, o FUNDO verde da barra (::before) ganha um furo com o formato dela
+   (máscara); os ícones ficam por cima, sem recorte. js/menu.js mede o item ativo (--aba-top). */
+.menu { background: transparent; isolation: isolate; }
+.menu::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: var(--verde-menu);
+  /* --aba-top vem da .menu (js/menu.js) */
+  --aba-x: 22px;               /* margem esquerda do item */
+  --mask:
+    radial-gradient(circle at 100% 50%, #000 34.5px, transparent 35px),   /* ponta redonda da aba */
+    linear-gradient(#000 0 0),                                             /* corpo da aba */
+    radial-gradient(circle at 0 0,    transparent 29.5px, #000 30px),     /* curvinha de cima */
+    radial-gradient(circle at 0 100%, transparent 29.5px, #000 30px),     /* curvinha de baixo */
+    linear-gradient(#000 0 0);                                             /* a barra inteira */
+  --mask-tam: 35px 70px, calc(100% - var(--aba-x) - 35px) 70px, 30px 30px, 30px 30px, 100% 100%;
+  --mask-pos: var(--aba-x) var(--aba-top), calc(var(--aba-x) + 35px) var(--aba-top),
+              100% calc(var(--aba-top) - 30px), 100% calc(var(--aba-top) + 70px), 0 0;
+  -webkit-mask-image: var(--mask); -webkit-mask-size: var(--mask-tam); -webkit-mask-position: var(--mask-pos);
+  -webkit-mask-repeat: no-repeat; -webkit-mask-composite: xor;
+  mask-image: var(--mask); mask-size: var(--mask-tam); mask-position: var(--mask-pos);
+  mask-repeat: no-repeat; mask-composite: exclude;
+}
+.menu { --aba-top: -300px; }       /* sem item ativo: o furo fica fora da tela */
 .menu__item.is-active .menu__link { color: var(--contraste); }
 .menu__item.is-active .menu__link:hover { background: transparent; }
-
-/* curvas côncavas em cima e embaixo (radial-gradient pinta só dentro dos 30px, sem vazar) */
-.menu__item.is-active::before,
-.menu__item.is-active::after {
-  content: ""; position: absolute; right: 0; width: 30px; height: 30px; pointer-events: none;
-}
-.menu__item.is-active::before { bottom: 100%; background: radial-gradient(circle at 0 0,    transparent 29.5px, var(--pagina-bg) 30px); }
-.menu__item.is-active::after  { top: 100%;    background: radial-gradient(circle at 0 100%, transparent 29.5px, var(--pagina-bg) 30px); }
 
 /* ---------- Fundo escurecido (só mobile) ---------- */
 .menu-fundo {

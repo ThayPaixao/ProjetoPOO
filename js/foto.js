@@ -19,8 +19,8 @@ const FotoPerfil = (() => {
       <label class="foto-editor__zoom">Zoom <input type="range" min="1" max="3" step="0.01" value="1"></label>
       <p class="foto-editor__dica">Arraste a foto para escolher o que aparece no círculo.</p>
       <div class="popup__acoes">
-        <button type="button" class="btn btn--pequeno" data-foto="cancelar">Cancelar</button>
-        <button type="button" class="btn btn--ok btn--pequeno" data-foto="usar">Usar foto</button>
+        <button type="button" class="btn btn--quadrado" data-foto="cancelar" aria-label="Cancelar" title="Cancelar">&larr;</button>
+        <button type="button" class="btn btn--ok btn--quadrado" data-foto="usar" aria-label="Usar foto" title="Usar foto">ok</button>
       </div>`;
     document.body.append(dialogo);
     janela = dialogo.querySelector('.foto-editor__janela');

@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="css/perfil.css">
   <link rel="stylesheet" href="css/popup.css">
   <link rel="stylesheet" href="css/foto.css">
+  <link rel="stylesheet" href="css/arredondado.css">
   <link rel="shortcut icon" type="image/png" href="assets/img/Icon.png">
 </head>
 <body>
@@ -69,9 +70,9 @@
 
             <div class="perfil__botoes">
               <!-- abre a janela de editar perfil (js/perfil.js) -->
-              <button class="btn btn--pequeno" id="btn-editar" type="button">editar</button>
+              <button class="btn btn--pequeno btn--editar" id="btn-editar" type="button"><svg class="icone-btn" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/></svg> editar</button>
               <!-- encerra a sessão no servidor (js/perfil.js) e volta para a tela inicial -->
-              <a class="btn btn--pequeno" id="btn-sair" href="index.html">sair</a>
+              <a class="btn btn--pequeno btn--sair" id="btn-sair" href="index.html">sair</a>
             </div>
           </header>
 
@@ -126,8 +127,8 @@
 
       <p class="form__mensagem" role="alert"></p>
       <div class="popup__acoes">
-        <button class="btn btn--pequeno" type="button" data-fechar>Cancelar</button>
-        <button class="btn btn--ok btn--pequeno" type="submit">Salvar</button>
+        <button class="btn btn--quadrado" type="button" data-fechar aria-label="Cancelar" title="Cancelar">&larr;</button>
+        <button class="btn btn--ok btn--quadrado" type="submit" aria-label="Salvar" title="Salvar">ok</button>
       </div>
     </form>
   </dialog>

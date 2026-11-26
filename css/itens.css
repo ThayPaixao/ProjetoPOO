@@ -16,7 +16,7 @@
   --card-fundo: var(--fundo);      /* creme */
   --card-borda: var(--neutra);     /* laranja */
   --card-campo: var(--amarelo);    /* amarelo-alaranjado dos campos */
-  --card-img: #ABABAB;             /* cinza atrás da imagem */
+  --card-img: #FFFFFF;             /* fundo branco atrás da imagem */
   --card-comprar: #2F7A1F;         /* botão verde */
   --card-vender: #C00000;          /* botão vermelho */
 
@@ -68,7 +68,7 @@
 }
 .historico-item__img { width: 68px; height: 68px; object-fit: contain; padding: .25rem; background: var(--wf-bg-claro); border: 1px solid var(--wf-borda); }
 .historico-item__dados { display: grid; gap: .2rem; margin-right: 2.2rem; }
-.historico-item__dados > * { padding: 0 .35rem; font-size: .75rem; font-weight: 400; text-align: center; color: var(--contraste); background: var(--amarelo); border: 1px solid var(--neutra); }
+.historico-item__dados > * { padding: 0 .35rem; font-size: .75rem; font-weight: 400; text-align: center; color: var(--contraste); background: var(--fundo); border: 1px solid var(--neutra); }
 .historico-item .estrela { position: absolute; top: .6rem; right: .6rem; }
 
 /* ---------- Imagens do jogo (pixel art): ampliar sem borrar ---------- */

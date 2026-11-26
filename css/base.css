@@ -56,7 +56,7 @@ body {
   margin: 0;
   font-family: var(--fonte);
   color: var(--contraste);
-  background: var(--pagina-bg);
+  background: #4FD0F0 url("../assets/img/background.png") center bottom / cover no-repeat fixed;   /* fixo: não se mexe ao rolar */
   line-height: 1.5;
   cursor: url('../assets/img/normal.cur'), auto;
 }
