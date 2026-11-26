@@ -19,7 +19,7 @@ body.tela-home {
 
 .bloco {
   /* cores das caixas (Figma): troque aqui */
-  --bloco-fundo: rgba(173, 216, 250, .78);   /* azul-claro translúcido */
+  --bloco-fundo: rgba(248, 249, 250, 0.50);   /* azul-claro translúcido */
   --bloco-borda: rgba(255, 255, 255, .85);
   --bloco-titulo: var(--verde-primaria);
 
