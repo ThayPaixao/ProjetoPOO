@@ -26,6 +26,10 @@ abstract class Transacao implements JsonSerializable
     /* Aplica a transação no saldo do jogador: a Compra debita, a Venda credita. */
     abstract public function executar(): void;
 
+    /* Devolve as estatísticas do jogador com esta transação incluída (usado pelas conquistas).
+       A Compra conta loja, qualidade e tamanho; a Venda conta cliente, sentimento e lucro. */
+    abstract public function registrarEm(Estatisticas $estatisticas): Estatisticas;
+
     /* Este método é igual para as duas, mas usa getTipo() e getValor(),
        que cada subclasse implementa do seu jeito (POLIMORFISMO). */
     public function descricao(): string

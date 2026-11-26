@@ -1,0 +1,96 @@
+/* ==========================================================
+   vila.css  –  página da vila (vila.html): ranking, conquistas e diário de gostos
+   As caixas de fora são os .bloco da home (css/home.css). Cores: troque aqui.
+   ========================================================== */
+.vila {
+  --vila-linha: var(--fundo);            /* fundo creme das linhas e cartões */
+  --vila-borda: var(--neutra);           /* laranja, igual aos cards de item */
+  --vila-voce: #FFF3C4;                  /* destaque da sua linha no ranking */
+  --vila-ouro: #FFC21A;                  /* 1º lugar e conquista liberada (mesma cor da estrela de ouro) */
+  --vila-prata: #A9BCD0;
+  --vila-bronze: #D08A4E;
+  --vila-barra: var(--verde-primaria);   /* barra de progresso das conquistas */
+  --vila-ama: #B0175A;                   /* mesmas cores do sentimento em css/itens.css */
+  --vila-odeia: #6B6B6B;
+  --vila-raio: 12px;
+}
+
+.vila__dica { margin: -.5rem 0 1rem; font-size: .9rem; opacity: .85; }
+.vila__contador { font-size: .95rem; font-weight: 400; color: var(--contraste); }
+.vila__aviso { grid-column: 1 / -1; text-align: center; font-weight: 700; color: #C00000; }
+.vila__aviso:empty { display: none; }
+.vila .vazio { color: var(--contraste); }
+
+/* ---------- Ranking ---------- */
+.ranking { display: grid; gap: .5rem; width: min(100%, 620px); margin: 0 auto; padding: 0; list-style: none; }   /* <ol>: o base.css só zera o <ul> */
+.ranking__linha {
+  display: grid; grid-template-columns: 2.4rem 40px minmax(0, 1fr) auto auto; gap: .8rem; align-items: center;
+  padding: .45rem .9rem;
+  background: var(--vila-linha); border: 2px solid var(--vila-borda); border-radius: var(--vila-raio);
+}
+.ranking__linha--voce { background: var(--vila-voce); border-width: 3px; }
+.ranking__posicao {
+  display: grid; place-items: center; width: 2.1rem; height: 2.1rem;
+  font-weight: 700; border-radius: 50%; background: #fff; border: 2px solid var(--vila-borda);
+}
+.ranking__linha:nth-child(1) .ranking__posicao { background: var(--vila-ouro); }
+.ranking__linha:nth-child(2) .ranking__posicao { background: var(--vila-prata); }
+.ranking__linha:nth-child(3) .ranking__posicao { background: var(--vila-bronze); }
+.ranking__foto { width: 40px; height: 40px; object-fit: cover; border-radius: 50%; border: 2px solid var(--vila-borda); background: #fff; }
+.ranking__nome { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ranking__vendas { font-size: .8rem; opacity: .8; }
+.ranking__lucro { color: var(--verde-menu); }
+
+/* ---------- Conquistas ---------- */
+.conquistas { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+.conquista {
+  display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: .7rem; align-items: start;
+  padding: .8rem .9rem;
+  background: var(--vila-linha); border: 2px solid var(--vila-borda); border-radius: var(--vila-raio);
+}
+.conquista__icone {
+  width: 44px; height: 44px; padding: 6px;
+  fill: #D9D9D9; stroke: var(--contraste); stroke-width: 1.4; stroke-linejoin: round;
+  background: #fff; border-radius: 50%; border: 2px solid var(--vila-borda);
+}
+.conquista__nome { font-size: .95rem; }
+.conquista__descricao { font-size: .8rem; line-height: 1.35; }
+.conquista__barra { height: 8px; margin-top: .45rem; background: #fff; border: 1px solid var(--vila-borda); border-radius: 999px; overflow: hidden; }
+.conquista__preenchido { display: block; height: 100%; width: 0; background: var(--vila-barra); }
+.conquista__progresso { margin-top: .15rem; font-size: .72rem; text-align: right; opacity: .8; }
+/* ainda não conquistada: apagadinha */
+.conquista:not(.conquista--feita) { opacity: .7; }
+/* conquistada: troféu dourado e borda dourada */
+.conquista--feita { border-color: var(--vila-ouro); box-shadow: 0 3px 0 rgba(209, 154, 0, .35); }
+.conquista--feita .conquista__icone { fill: var(--vila-ouro); border-color: var(--vila-ouro); }
+
+/* ---------- Diário de gostos ---------- */
+.diario { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+.morador {
+  display: flex; flex-direction: column; gap: .7rem;
+  padding: .9rem;
+  background: var(--vila-linha); border: 2px solid var(--vila-borda); border-radius: var(--vila-raio);
+}
+.morador__cabeca { display: flex; align-items: center; gap: .7rem; }
+.morador__retrato {
+  width: 56px; height: 56px; flex: none; object-fit: cover; image-rendering: pixelated;
+  border-radius: 50%; border: 3px solid var(--vila-borda); background: #fff;
+}
+.morador__nome { font-size: 1.05rem; }
+.morador__contador { font-size: .8rem; opacity: .8; }
+.morador__itens { display: flex; flex-wrap: wrap; gap: .35rem; }
+.morador__itens .vazio { padding: .3rem 0; font-size: .82rem; text-align: left; }
+.gosto {
+  display: inline-flex; align-items: center; gap: .3rem;
+  padding: .15rem .5rem .15rem .25rem;
+  font-size: .78rem; background: #fff; border: 1px solid var(--vila-borda); border-radius: 999px;
+}
+.gosto img { width: 22px; height: 22px; object-fit: contain; image-rendering: pixelated; }
+.gosto[data-sentimento="Ama"]   { color: var(--vila-ama); border-color: var(--vila-ama); font-weight: 700; }
+.gosto[data-sentimento="Odeia"] { color: var(--vila-odeia); border-style: dashed; }
+
+@media (max-width: 560px) {
+  .ranking__linha { grid-template-columns: 2.1rem 34px minmax(0, 1fr) auto; gap: .5rem; padding: .4rem .6rem; }
+  .ranking__foto { width: 34px; height: 34px; }
+  .ranking__vendas { display: none; }
+}

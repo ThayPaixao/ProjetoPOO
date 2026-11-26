@@ -35,4 +35,10 @@ class Venda extends Transacao
     {
         $this->jogador->creditar($this->valor);
     }
+
+    public function registrarEm(Estatisticas $estatisticas): Estatisticas
+    {
+        $lucro = $this->valor - $this->unidade->getPrecoPago();
+        return $estatisticas->comVenda($this->npc->getId(), $this->sentimento, $lucro);
+    }
 }

@@ -117,6 +117,62 @@ class TransacaoRepositorio
         ], $consulta->fetchAll());
     }
 
+    /* Os números das conquistas, numa consulta só (o banco fica longe: cada ida e volta custa ~0,2 s).
+       "c" = compras do jogador (com a loja de cada item) | "v" = vendas dessas compras (com o lucro). */
+    public function estatisticas(int $idJogador): Estatisticas
+    {
+        $consulta = $this->pdo->prepare(
+            "WITH c AS (SELECT co.id_compra, co.id_qualidade, co.tamanho_cm, co.preco_pago, l.id_npc AS loja
+                        FROM compra co
+                        JOIN item i ON i.id_item = co.id_item
+                        JOIN loja l ON l.id_loja = i.id_loja
+                        WHERE co.id_jogador = ?),
+                  v AS (SELECT v.id_npc, v.id_sentimento, v.preco_venda - c.preco_pago AS lucro
+                        FROM venda v JOIN c ON c.id_compra = v.id_compra)
+             SELECT (SELECT count(*) FROM c)                                   AS compras,
+                    (SELECT count(*) FROM c WHERE id_qualidade = ?)            AS iridio,
+                    (SELECT coalesce(max(tamanho_cm), 0) FROM c)               AS maior_peixe,
+                    (SELECT coalesce(string_agg(DISTINCT loja, ','), '') FROM c) AS lojas,
+                    (SELECT count(*) FROM v)                                   AS vendas,
+                    (SELECT count(*) FROM v WHERE id_sentimento = ?)           AS amadas,
+                    (SELECT coalesce(string_agg(DISTINCT id_npc, ','), '') FROM v) AS clientes,
+                    (SELECT coalesce(sum(lucro), 0) FROM v)                    AS lucro");
+        $consulta->execute([$idJogador, Qualidade::IRIDIO->value, Sentimento::AMA->value]);
+        $linha = $consulta->fetch();
+        $lista = fn(string $ids) => $ids === '' ? [] : explode(',', $ids);
+        return new Estatisticas((int) $linha['compras'], (int) $linha['iridio'], (int) $linha['maior_peixe'],
+            $lista($linha['lojas']), (int) $linha['vendas'], (int) $linha['amadas'],
+            $lista($linha['clientes']), (int) $linha['lucro']);
+    }
+
+    /* Diário de gostos: o que o jogador já descobriu vendendo, por morador.
+       Cada item aparece uma vez por morador, com o sentimento da venda MAIS RECENTE
+       (se os gostos mudaram no banco, vale o que ele sentiu da última vez).
+       @return array<string, array[]>  id do NPC => [{ nome, imagem, sentimento }]  (amados primeiro) */
+    public function diario(int $idJogador): array
+    {
+        $consulta = $this->pdo->prepare(
+            'SELECT * FROM (
+                 SELECT DISTINCT ON (v.id_npc, co.id_item) v.id_npc, v.id_sentimento, i.nome, i.foto
+                 FROM venda v
+                 JOIN compra co ON co.id_compra = v.id_compra
+                 JOIN item i ON i.id_item = co.id_item
+                 WHERE co.id_jogador = ?
+                 ORDER BY v.id_npc, co.id_item, v.id_venda DESC
+             ) descobertas
+             ORDER BY id_npc, id_sentimento, nome');
+        $consulta->execute([$idJogador]);
+        $diario = [];
+        foreach ($consulta->fetchAll() as $linha) {
+            $diario[$linha['id_npc']][] = [
+                'nome'       => $linha['nome'],
+                'imagem'     => $linha['foto'],
+                'sentimento' => Sentimento::from((int) $linha['id_sentimento'])->nome(),
+            ];
+        }
+        return $diario;
+    }
+
     private function criarUnidade(array $linha): UnidadeItem
     {
         return new UnidadeItem(

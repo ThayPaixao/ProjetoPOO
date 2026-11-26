@@ -25,4 +25,9 @@ class Compra extends Transacao
     {
         $this->jogador->debitar($this->getValor());
     }
+
+    public function registrarEm(Estatisticas $estatisticas): Estatisticas
+    {
+        return $estatisticas->comCompra($this->npc->getId(), $this->unidade);
+    }
 }

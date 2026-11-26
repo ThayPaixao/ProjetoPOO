@@ -57,6 +57,32 @@ class JogadorRepositorio
         $consulta->execute([$jogador->getSaldo(), $jogador->getId()]);
     }
 
+    /* As contas criadas para testar o site usam e-mails @exemplo.com e ficam fora do ranking. */
+    private const EMAIL_DE_TESTE = '%@exemplo.com';
+
+    /* Ranking da vila: quem mais lucrou vendendo (só entra quem já vendeu alguma coisa).
+       @return array[]  [{ id, nome, foto, vendas, lucro }], do maior lucro para o menor */
+    public function ranking(int $limite = 10): array
+    {
+        $consulta = $this->pdo->prepare(
+            'SELECT j.id_jogador, j.nome, j.foto, count(*) AS vendas, sum(v.preco_venda - c.preco_pago) AS lucro
+             FROM jogador j
+             JOIN compra c ON c.id_jogador = j.id_jogador
+             JOIN venda v ON v.id_compra = c.id_compra
+             WHERE j.email NOT LIKE ?
+             GROUP BY j.id_jogador
+             ORDER BY lucro DESC, vendas DESC, j.id_jogador
+             LIMIT ?');
+        $consulta->execute([self::EMAIL_DE_TESTE, $limite]);
+        return array_map(fn(array $linha) => [
+            'id'     => (int) $linha['id_jogador'],
+            'nome'   => $linha['nome'],
+            'foto'   => $linha['foto'],
+            'vendas' => (int) $linha['vendas'],
+            'lucro'  => (int) $linha['lucro'],
+        ], $consulta->fetchAll());
+    }
+
     private function criar(array $linha): Jogador
     {
         return new Jogador((int) $linha['id_jogador'], $linha['nome'], $linha['email'],

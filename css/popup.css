@@ -61,6 +61,16 @@
 .popup[data-tipo="erro"] .popup__item { background: #FFF1EF; border-color: #C00000; }
 .popup[data-tipo="erro"] .popup__resultado { color: #A00000; }
 
+/* conquista liberada (aparece só quando a compra/venda libera uma); é um link para vila.html */
+.popup__conquista {
+  display: block; margin-top: .8rem; padding: .5rem .7rem;
+  font-weight: 700; text-align: center; text-decoration: none;
+  background: #FFF3C4; border: 2px dashed #FFC21A; border-radius: 8px;
+  animation: conquista-brilha 1.2s ease-in-out 2;
+}
+.popup__conquista[hidden] { display: none; }
+@keyframes conquista-brilha { 50% { background: #FFE27A; } }
+
 /* ---------- Editar perfil (perfil.html) ---------- */
 .perfil__botoes { display: flex; flex-direction: column; gap: .5rem; align-self: start; }
 .btn--editar { --btn-fundo: var(--verde-menu); --btn-texto: var(--fundo); --btn-borda: var(--verde-menu-escuro); --btn-sombra: var(--verde-menu-escuro); gap: .35em; }

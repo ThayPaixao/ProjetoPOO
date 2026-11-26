@@ -16,6 +16,8 @@ class Controlador
     private TransacaoRepositorio $transacoes;
     private FotoRepositorio $fotos;
     private SaveRepositorio $saves;
+    private QuadroDeAvisos $avisos;                  // PADRÃO OBSERVER: toda compra e venda é publicada aqui
+    private ObservadorDeConquistas $conquistas;      // ... e este observador vê quais conquistas ela liberou
 
     public function __construct(PDO $pdo, array $corpo, array $consulta, array $arquivos = [])
     {
@@ -29,6 +31,9 @@ class Controlador
         $this->npcs = new NpcRepositorio($pdo, $this->itens);
         $this->jogadores = new JogadorRepositorio($pdo);
         $this->transacoes = new TransacaoRepositorio($pdo);
+        $this->conquistas = new ObservadorDeConquistas(fn(int $id) => $this->transacoes->estatisticas($id));
+        $this->avisos = new QuadroDeAvisos();
+        $this->avisos->inscrever($this->conquistas);
     }
 
     // ---------- conta ----------
@@ -182,15 +187,17 @@ class Controlador
             $unidade = $vendedor->vender($this->itens->buscar($idItem));   // sorteia qualidade (e tamanho)
             $compra = new Compra($jogador, $unidade, $vendedor);
             $compra->executar();                                           // debita ou lança SaldoInsuficiente
+            $this->avisos->publicar($compra);                              // avisa os observadores (conquistas)
             $this->jogadores->atualizarSaldo($jogador);
             $this->transacoes->salvarCompra($compra);
             return [
-                'ok'       => true,
-                'item'     => $unidade->paraArray(),
-                'npc'      => $vendedor->paraArray(),
-                'fala'     => $vendedor->fala(),
-                'mensagem' => $compra->descricao(),
-                'dinheiro' => $jogador->getSaldo(),
+                'ok'         => true,
+                'item'       => $unidade->paraArray(),
+                'npc'        => $vendedor->paraArray(),
+                'fala'       => $vendedor->fala(),
+                'mensagem'   => $compra->descricao(),
+                'dinheiro'   => $jogador->getSaldo(),
+                'conquistas' => $this->conquistasNovas(),
             ];
         });
     }
@@ -205,6 +212,7 @@ class Controlador
             $unidade = $this->transacoes->buscarNoInventario($jogador->getId(), $idUnidade);
             $venda = new Venda($jogador, $unidade, $cliente);
             $venda->executar();
+            $this->avisos->publicar($venda);
             $this->jogadores->atualizarSaldo($jogador);
             $this->transacoes->salvarVenda($venda);
             return [
@@ -217,11 +225,51 @@ class Controlador
                 'fala'       => $cliente->reacao($unidade->getItem()),
                 'mensagem'   => $venda->descricao(),
                 'dinheiro'   => $jogador->getSaldo(),
+                'conquistas' => $this->conquistasNovas(),
             ];
         });
     }
 
+    // ---------- vila: conquistas, diário de gostos e ranking ----------
+
+    /* GET /api/usuario/conquistas   → todas as conquistas, com o progresso do jogador */
+    public function conquistas(): array
+    {
+        $estatisticas = $this->transacoes->estatisticas($this->idJogadorLogado());
+        return array_map(fn(Conquista $conquista) => $conquista->paraArray($estatisticas), Conquista::cases());
+    }
+
+    /* GET /api/usuario/diario   → cada morador com os gostos que o jogador já descobriu vendendo */
+    public function diario(): array
+    {
+        $descobertas = $this->transacoes->diario($this->idJogadorLogado());
+        return array_map(fn(NPC $npc) => [...$npc->paraArray(), 'itens' => $descobertas[$npc->getId()] ?? []],
+                         $this->npcs->listar('CLIENTE'));
+    }
+
+    /* GET /api/ranking   → os 10 que mais lucraram vendendo; "voce" marca o jogador logado */
+    public function ranking(): array
+    {
+        $idLogado = $this->idJogadorLogado();
+        $ranking = $this->jogadores->ranking();
+        return array_map(fn(array $linha, int $i) => [
+            'posicao' => $i + 1,
+            'nome'    => $linha['nome'],
+            'foto'    => $linha['foto'],
+            'vendas'  => $linha['vendas'],
+            'lucro'   => $linha['lucro'],
+            'voce'    => $linha['id'] === $idLogado,
+        ], $ranking, array_keys($ranking));
+    }
+
     // ---------- ajudantes ----------
+
+    /* As conquistas que a compra/venda desta requisição liberou, no formato do front. */
+    private function conquistasNovas(): array
+    {
+        return array_map(fn(Conquista $c) => ['id' => $c->value, 'nome' => $c->nome(), 'descricao' => $c->descricao()],
+                         $this->conquistas->novas());
+    }
 
     /* Ou tudo dá certo (saldo + compra/venda salvos), ou nada é salvo. */
     private function emTransacao(callable $acao): array

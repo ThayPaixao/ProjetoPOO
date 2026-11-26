@@ -102,8 +102,18 @@
     document.getElementById('popup-resultado').textContent = modo === 'comprar'
       ? `Você pagou ${Render.preco(item.preco)}`
       : `Recebeu ${Render.preco(r.valor)} (${r.lucro >= 0 ? 'lucro' : 'prejuízo'} de ${Render.preco(Math.abs(r.lucro))})`;
+    mostrarConquistas(r.conquistas ?? []);
     popup.dataset.tipo = 'ok';
     popup.showModal();
+  }
+
+  /* conquistas liberadas por esta compra/venda (o link leva para a página da vila) */
+  function mostrarConquistas(conquistas) {
+    const aviso = document.getElementById('popup-conquista');
+    aviso.hidden = conquistas.length === 0;
+    aviso.textContent = conquistas.length === 1
+      ? `🏆 Conquista liberada: ${conquistas[0].nome}!`
+      : `🏆 Conquistas liberadas: ${conquistas.map(c => c.nome).join(', ')}!`;
   }
 
   /* pop-up de ERRO (ex.: saldo insuficiente): mesmo visual, em vermelho, com a mensagem do servidor.
@@ -123,6 +133,7 @@
     document.getElementById('popup-item-img').src = card?.querySelector('img')?.src || 'assets/img/item-placeholder.svg';
     document.getElementById('popup-item-nome').textContent = card?.querySelector('.item-card__nome')?.textContent ?? '';
     document.getElementById('popup-resultado').textContent = resposta.erro;
+    mostrarConquistas([]);
     popup.dataset.tipo = 'erro';
     popup.showModal();
   }

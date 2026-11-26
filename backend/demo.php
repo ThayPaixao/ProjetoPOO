@@ -108,3 +108,20 @@ try {
 }
 echo 'E $jogador->saldo = 999999; dá erro: a propriedade é private.', PHP_EOL;
 echo 'O jogador como o front recebe (sem a senha): ', json_encode($jogador->paraArray(), JSON_UNESCAPED_UNICODE), PHP_EOL;
+
+// ---------- PADRÃO OBSERVER ----------
+titulo('PADRÃO OBSERVER: cada compra/venda é publicada no QuadroDeAvisos');
+$quadro = new QuadroDeAvisos();
+$conquistas = new ObservadorDeConquistas(fn(int $id) => new Estatisticas());   // jogador novo (no site, vem do banco)
+$quadro->inscrever($conquistas);
+$quadro->inscrever(new class implements ObservadorDeTransacao {                // um 2º observador, só para mostrar
+    public function notificar(Transacao $transacao): void
+    {
+        echo '  [registro] ', $transacao->descricao(), PHP_EOL;
+    }
+});
+$novato = new Jogador(99, 'Novato', 'novato@exemplo.com', 'x', 1000);
+$sorte = new Compra($novato, new UnidadeItem($atum, Qualidade::IRIDIO, 47, $atum->calcularPreco(Qualidade::IRIDIO, 47)), $willy);
+$sorte->executar();
+$quadro->publicar($sorte);                     // o quadro não sabe quem está ouvindo: só avisa todo mundo
+echo 'Conquistas liberadas: ', implode(', ', array_map(fn(Conquista $c) => $c->nome(), $conquistas->novas())), PHP_EOL;

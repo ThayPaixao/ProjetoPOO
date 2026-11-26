@@ -80,10 +80,20 @@ const API = (() => {
     /* GET /api/lojas/:npc/itens  → catálogo do vendedor (preco = preço base) */
     async getItensLoja(npc) { return buscar(`${npcNaRota(npc)}/itens`); },
 
-    /* POST /api/lojas/:npc/comprar   body: { itemId }  → { ok, item, mensagem, dinheiro } */
+    /* POST /api/lojas/:npc/comprar   body: { itemId }  → { ok, item, mensagem, dinheiro, conquistas }
+       conquistas = as que esta compra liberou: [{ id, nome, descricao }] (quase sempre vazia) */
     async comprarItem(itemId, npc) { return enviar(`${npcNaRota(npc)}/comprar`, { itemId }); },
 
-    /* POST /api/lojas/:npc/vender    body: { itemId }  → { ok, valor, sentimento, fala, mensagem, dinheiro } */
+    /* POST /api/lojas/:npc/vender    body: { itemId }  → { ok, valor, sentimento, fala, mensagem, dinheiro, conquistas } */
     async venderItem(itemId, npc) { return enviar(`${npcNaRota(npc)}/vender`, { itemId }); },
+
+    /* GET /api/usuario/conquistas → [{ id, nome, descricao, progresso, meta, conquistada }] */
+    async getConquistas() { return buscar('usuario/conquistas'); },
+
+    /* GET /api/usuario/diario → um por morador: [{ id, nome, imagem, itens: [{ nome, imagem, sentimento }] }] */
+    async getDiario() { return buscar('usuario/diario'); },
+
+    /* GET /api/ranking → os 10 que mais lucraram: [{ posicao, nome, foto, vendas, lucro, voce }] */
+    async getRanking() { return buscar('ranking'); },
   };
 })();
