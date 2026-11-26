@@ -5,38 +5,53 @@
 .grade-itens {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 1.5rem;
+  gap: 2rem 1.5rem;                 /* espaço extra entre as linhas por causa da estrela */
   align-content: start;
 }
 .vazio { grid-column: 1 / -1; padding: 1.5rem; text-align: center; color: #555; }
 
-/* ---------- Card ---------- */
+/* ---------- Card (padrão do Figma) ---------- */
 .item-card {
+  /* cores do card: troque aqui */
+  --card-fundo: var(--fundo);      /* creme */
+  --card-borda: var(--neutra);     /* laranja */
+  --card-campo: var(--amarelo);    /* amarelo-alaranjado dos campos */
+  --card-img: #ABABAB;             /* cinza atrás da imagem */
+  --card-comprar: #2F7A1F;         /* botão verde */
+  --card-vender: #C00000;          /* botão vermelho */
+
   position: relative;
-  display: flex; flex-direction: column; gap: .4rem;
-  padding: .9rem;
-  background: var(--wf-bg);
-  border: 1px solid var(--wf-borda);
+  display: flex; flex-direction: column; gap: .55rem;
+  padding: 1.1rem 1rem 1rem;
+  background: var(--card-fundo);
+  border: 2px solid var(--card-borda);
   transition: transform .12s ease, box-shadow .12s ease;
 }
-.item-card:hover { transform: translateY(-3px); box-shadow: 0 5px 0 rgba(0,0,0,.18); }
+.item-card:hover { transform: translateY(-3px); box-shadow: 0 5px 0 rgba(61,48,40,.18); }
 
 .item-card__img {
-  width: 100%; aspect-ratio: 1; object-fit: contain; padding: .5rem;
-  background: var(--wf-bg-claro); border: 1px solid var(--wf-borda);
+  width: 100%; aspect-ratio: 1; object-fit: contain; padding: 1rem;
+  background: var(--card-img); border-radius: 10px;
 }
 .item-card__nome, .item-card__linha {
-  padding: .1rem .35rem;
-  font-size: .78rem; font-weight: 400; text-align: center;
-  background: var(--wf-bg-claro); border: 1px solid var(--wf-borda);
+  padding: .2rem .4rem;
+  font-size: .82rem; font-weight: 400; text-align: center; color: var(--contraste);
+  background: var(--card-campo); border: 1px solid var(--card-borda);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.item-card__acao { margin-top: .2rem; width: 100%; }
-.item-card .estrela { position: absolute; top: .2rem; right: .2rem; }
+/* botão em pílula: verde para comprar, vermelho para vender (js/lojas.js marca a grade com data-modo) */
+.item-card__acao.btn {
+  --btn-fundo: var(--card-comprar); --btn-texto: var(--fundo); --btn-borda: #333; --btn-sombra: #1B5A0C;
+  margin-top: .3rem; width: 100%;
+  padding: .45em 1em; font-size: .9rem; border-width: 1px; border-radius: 999px;
+}
+.grade-itens[data-modo="vender"] .item-card__acao.btn { --btn-fundo: var(--card-vender); --btn-texto: #fff; --btn-sombra: #7A0000; }
+/* estrela grande, "saindo" pelo canto de cima */
+.item-card .estrela { position: absolute; top: -18px; right: -14px; width: 48px; height: 48px; }
 
 /* ---------- Estrela de qualidade (data-quality: 0 normal, 1 prata, 2 ouro, 3 irídio) ---------- */
-.estrela { width: 28px; height: 28px; fill: #F5F5F5; stroke: var(--wf-borda); stroke-width: 1.2; stroke-linejoin: round; }
-.estrela[data-quality="1"] { fill: #C9CFD6; }
+.estrela { width: 28px; height: 28px; fill: #D9D9D9; stroke: #000; stroke-width: 1; stroke-linejoin: round; }
+.estrela[data-quality="1"] { fill: #A9BCD0; }
 .estrela[data-quality="2"] { fill: #FFC21A; }
 .estrela[data-quality="3"] { fill: #9B4DCA; }
 
@@ -53,7 +68,7 @@
 }
 .historico-item__img { width: 68px; height: 68px; object-fit: contain; padding: .25rem; background: var(--wf-bg-claro); border: 1px solid var(--wf-borda); }
 .historico-item__dados { display: grid; gap: .2rem; margin-right: 2.2rem; }
-.historico-item__dados > * { padding: 0 .35rem; font-size: .75rem; font-weight: 400; text-align: center; background: var(--wf-bg-claro); border: 1px solid var(--wf-borda); }
+.historico-item__dados > * { padding: 0 .35rem; font-size: .75rem; font-weight: 400; text-align: center; color: var(--contraste); background: var(--amarelo); border: 1px solid var(--neutra); }
 .historico-item .estrela { position: absolute; top: .6rem; right: .6rem; }
 
 /* ---------- Imagens do jogo (pixel art): ampliar sem borrar ---------- */

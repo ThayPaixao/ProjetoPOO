@@ -38,6 +38,7 @@
      Como no jogo, você só descobre o que o NPC sente pelo item na hora de vender. */
   async function desenhar() {
     const comprando = estado.modo === 'comprar';
+    grade.dataset.modo = estado.modo;        // o CSS pinta o botão: verde (comprar) ou vermelho (vender)
     const pedido = ++estado.pedido;          // se trocar de NPC/aba antes de chegar, esta resposta é ignorada
     Render.lista(grade, [], 'tpl-item-card', { vazio: 'Carregando…' });   // tira os itens antigos na hora
     try {
