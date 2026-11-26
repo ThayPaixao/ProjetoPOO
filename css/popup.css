@@ -54,6 +54,13 @@
 /* botão de confirmar das janelinhas em verde (o .btn--pequeno deixaria cinza) */
 .popup .btn--ok { --btn-fundo: var(--verde-menu); --btn-texto: var(--fundo); --btn-borda: var(--verde-menu); --btn-sombra: var(--verde-menu-escuro); }
 
+/* versão de erro (ex.: saldo insuficiente) */
+.popup[data-tipo="erro"] { border-color: #C00000; }
+.popup[data-tipo="erro"] .popup__balao { background: #FFE1DE; }
+.popup[data-tipo="erro"] .popup__veredito { color: #C00000; }
+.popup[data-tipo="erro"] .popup__item { background: #FFF1EF; border-color: #C00000; }
+.popup[data-tipo="erro"] .popup__resultado { color: #A00000; }
+
 /* ---------- Editar perfil (perfil.html) ---------- */
 .perfil__botoes { display: flex; flex-direction: column; gap: .5rem; align-self: start; }
 .btn--editar { --btn-fundo: var(--verde-menu); --btn-texto: var(--fundo); --btn-borda: var(--verde-menu-escuro); --btn-sombra: var(--verde-menu-escuro); gap: .35em; }

@@ -102,6 +102,27 @@
     document.getElementById('popup-resultado').textContent = modo === 'comprar'
       ? `Você pagou ${Render.preco(item.preco)}`
       : `Recebeu ${Render.preco(r.valor)} (${r.lucro >= 0 ? 'lucro' : 'prejuízo'} de ${Render.preco(Math.abs(r.lucro))})`;
+    popup.dataset.tipo = 'ok';
+    popup.showModal();
+  }
+
+  /* pop-up de ERRO (ex.: saldo insuficiente): mesmo visual, em vermelho, com a mensagem do servidor */
+  function mostrarErro(modo, idNpc, card, mensagem) {
+    const btnNpc = listaNpcs.querySelector(`[data-npc="${idNpc}"]`);
+    const semDinheiro = mensagem.startsWith('Saldo insuficiente');
+    document.getElementById('popup-retrato').src = btnNpc?.dataset.imagem || 'assets/img/npc-placeholder.svg';
+    document.getElementById('popup-nome').textContent = btnNpc?.textContent ?? '';
+    document.getElementById('popup-fala').textContent = semDinheiro
+      ? 'Hmm... parece que falta ouro para levar isso. Volte quando tiver mais!'
+      : 'Ops, alguma coisa deu errado. Vamos tentar de novo?';
+    const veredito = document.getElementById('popup-veredito');
+    veredito.textContent = modo === 'comprar' ? 'Compra não realizada' : 'Venda não realizada';
+    veredito.dataset.sentimento = '';
+    veredito.dataset.qualidade = '';
+    document.getElementById('popup-item-img').src = card?.querySelector('img')?.src || 'assets/img/item-placeholder.svg';
+    document.getElementById('popup-item-nome').textContent = card?.querySelector('.item-card__nome')?.textContent ?? '';
+    document.getElementById('popup-resultado').textContent = mensagem;
+    popup.dataset.tipo = 'erro';
     popup.showModal();
   }
   popup.addEventListener('click', (e) => {                // clique fora da caixa fecha
@@ -120,7 +141,8 @@
     const resposta = modo === 'comprar' ? await API.comprarItem(id, npc) : await API.venderItem(id, npc);
 
     if (!resposta.ok) {
-      aviso.textContent = resposta.erro;                     // ex.: "Saldo insuficiente: ..."
+      aviso.textContent = '';
+      mostrarErro(modo, npc, botao.closest('.item-card'), resposta.erro);   // ex.: "Saldo insuficiente: ..."
       botao.disabled = false;
       return;
     }
