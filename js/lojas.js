@@ -106,10 +106,11 @@
     popup.showModal();
   }
 
-  /* pop-up de ERRO (ex.: saldo insuficiente): mesmo visual, em vermelho, com a mensagem do servidor */
-  function mostrarErro(modo, idNpc, card, mensagem) {
+  /* pop-up de ERRO (ex.: saldo insuficiente): mesmo visual, em vermelho, com a mensagem do servidor.
+     resposta = { ok: false, erro: 'mensagem', codigo: 'saldo_insuficiente' | ... } */
+  function mostrarErro(modo, idNpc, card, resposta) {
     const btnNpc = listaNpcs.querySelector(`[data-npc="${idNpc}"]`);
-    const semDinheiro = mensagem.startsWith('Saldo insuficiente');
+    const semDinheiro = resposta.codigo === 'saldo_insuficiente';
     document.getElementById('popup-retrato').src = btnNpc?.dataset.imagem || 'assets/img/npc-placeholder.svg';
     document.getElementById('popup-nome').textContent = btnNpc?.textContent ?? '';
     document.getElementById('popup-fala').textContent = semDinheiro
@@ -121,7 +122,7 @@
     veredito.dataset.qualidade = '';
     document.getElementById('popup-item-img').src = card?.querySelector('img')?.src || 'assets/img/item-placeholder.svg';
     document.getElementById('popup-item-nome').textContent = card?.querySelector('.item-card__nome')?.textContent ?? '';
-    document.getElementById('popup-resultado').textContent = mensagem;
+    document.getElementById('popup-resultado').textContent = resposta.erro;
     popup.dataset.tipo = 'erro';
     popup.showModal();
   }
@@ -142,7 +143,7 @@
 
     if (!resposta.ok) {
       aviso.textContent = '';
-      mostrarErro(modo, npc, botao.closest('.item-card'), resposta.erro);   // ex.: "Saldo insuficiente: ..."
+      mostrarErro(modo, npc, botao.closest('.item-card'), resposta);   // ex.: saldo insuficiente
       botao.disabled = false;
       return;
     }

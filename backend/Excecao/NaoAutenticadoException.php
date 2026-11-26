@@ -13,4 +13,9 @@ class NaoAutenticadoException extends JogoException
     {
         return 401;
     }
+
+    public function codigo(): string
+    {
+        return 'nao_autenticado';
+    }
 }

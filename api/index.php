@@ -54,7 +54,7 @@ try {
     responder(['ok' => false, 'erro' => 'Rota não encontrada.'], 404);
 } catch (JogoException $erro) {
     // erro de regra do jogo (saldo, login...): a mensagem é para o usuário ver
-    responder(['ok' => false, 'erro' => $erro->getMessage()], $erro->statusHttp());
+    responder(['ok' => false, 'erro' => $erro->getMessage(), 'codigo' => $erro->codigo()], $erro->statusHttp());
 } catch (ConfiguracaoException $erro) {
     error_log($erro->getMessage());
     responder(['ok' => false, 'erro' => $erro->getMessage()], 500);

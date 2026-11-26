@@ -7,4 +7,9 @@ class SaldoInsuficienteException extends JogoException
     {
         parent::__construct("Saldo insuficiente: custa $valor g e você tem $saldo g.");
     }
+
+    public function codigo(): string
+    {
+        return 'saldo_insuficiente';
+    }
 }

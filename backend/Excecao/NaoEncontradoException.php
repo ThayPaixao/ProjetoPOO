@@ -8,4 +8,9 @@ class NaoEncontradoException extends JogoException
     {
         return 404;
     }
+
+    public function codigo(): string
+    {
+        return 'nao_encontrado';
+    }
 }

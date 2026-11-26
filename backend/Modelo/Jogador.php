@@ -9,6 +9,7 @@ class Jogador implements JsonSerializable
 {
     public const SALDO_INICIAL = 1000;
     public const SENHA_MINIMA = 6;      // igual ao minlength do register.html
+    public const NOME_MAXIMO = 40;      // igual ao maxlength do register.html e do perfil.html
 
     private ?int $id;
     private string $nome;
@@ -30,11 +31,8 @@ class Jogador implements JsonSerializable
     /* Cria um jogador novo a partir do formulário de registro. */
     public static function registrar(string $nome, string $email, string $senha): self
     {
-        $nome = trim($nome);
+        $nome = self::validarNome($nome);
         $email = mb_strtolower(trim($email));
-        if ($nome === '') {
-            throw new DadosInvalidosException('Informe um nome.');
-        }
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new DadosInvalidosException('E-mail inválido.');
         }
@@ -70,11 +68,17 @@ class Jogador implements JsonSerializable
 
     public function alterarNome(string $nome): void
     {
+        $this->nome = self::validarNome($nome);
+    }
+
+    /* A mesma regra para o registro e para a edição do perfil. */
+    private static function validarNome(string $nome): string
+    {
         $nome = trim($nome);
-        if ($nome === '' || mb_strlen($nome) > 40) {
-            throw new DadosInvalidosException('O nome precisa ter entre 1 e 40 caracteres.');
+        if ($nome === '' || mb_strlen($nome) > self::NOME_MAXIMO) {
+            throw new DadosInvalidosException('O nome precisa ter entre 1 e ' . self::NOME_MAXIMO . ' caracteres.');
         }
-        $this->nome = $nome;
+        return $nome;
     }
 
     /* Para trocar a senha é preciso informar a atual. */

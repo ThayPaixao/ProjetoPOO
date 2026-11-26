@@ -58,16 +58,22 @@ class UnidadeItem implements JsonSerializable
         ];
     }
 
-    /* DESSERIALIZAÇÃO: o caminho contrário, do array lido do JSON de volta para o objeto. */
+    /* DESSERIALIZAÇÃO: o caminho contrário, do array lido do JSON de volta para o objeto.
+       Confere os campos antes: um save editado à mão ou cortado no meio vira SaveCorrompidoException. */
     public static function deArray(array $dados): self
     {
-        $i = $dados['item'];
+        $i = $dados['item'] ?? null;
+        if (!is_array($i) || !is_string($i['tipo'] ?? null) || !is_string($i['nome'] ?? null)
+            || !is_int($i['id'] ?? null) || !is_int($i['preco'] ?? null)
+            || !is_int($dados['qualidade'] ?? null) || !is_int($dados['preco_pago'] ?? null)) {
+            throw new SaveCorrompidoException('Unidade de item incompleta ou com campo do tipo errado.');
+        }
         return new self(
-            Item::criar($i['tipo'], (int) $i['id'], $i['nome'], (int) $i['preco'], $i['imagem'] ?? null),
-            Qualidade::from((int) $dados['qualidade']),
-            $dados['tamanho_cm'] === null ? null : (int) $dados['tamanho_cm'],
-            (int) $dados['preco_pago'],
-            $dados['id'] === null ? null : (int) $dados['id']);
+            Item::criar($i['tipo'], $i['id'], $i['nome'], $i['preco'], $i['imagem'] ?? null),
+            Qualidade::from($dados['qualidade']),
+            isset($dados['tamanho_cm']) ? (int) $dados['tamanho_cm'] : null,
+            $dados['preco_pago'],
+            isset($dados['id']) ? (int) $dados['id'] : null);
     }
 
     /* Mesmo formato do Item, mas com o preço pago e a qualidade desta unidade.

@@ -47,16 +47,27 @@ class SaveRepositorio
         }
         try {
             $dados = json_decode((string) file_get_contents($arquivo), true, 512, JSON_THROW_ON_ERROR);
+            if (!is_array($dados) || ($dados['versao'] ?? null) !== self::VERSAO) {
+                throw new SaveCorrompidoException('Não é um save desta versão do jogo.');
+            }
+            if (!is_string($dados['salvo_em'] ?? null) || !is_string($dados['jogador']['nome'] ?? null)
+                || !is_int($dados['jogador']['dinheiro'] ?? null)
+                || !is_array($dados['inventario'] ?? null) || !is_array($dados['vendas'] ?? null)) {
+                throw new SaveCorrompidoException('Faltam partes do save.');
+            }
             return [
                 'salvo_em'   => new DateTimeImmutable($dados['salvo_em']),
                 'arquivo'    => self::PASTA . '/' . basename($arquivo),
                 'nome'       => $dados['jogador']['nome'],
-                'dinheiro'   => (int) $dados['jogador']['dinheiro'],
-                'inventario' => new Colecao(UnidadeItem::class,                                  // DESSERIALIZAÇÃO
-                                    array_map([UnidadeItem::class, 'deArray'], $dados['inventario'])),
+                'dinheiro'   => $dados['jogador']['dinheiro'],
+                'inventario' => new Colecao(UnidadeItem::class, array_map(                       // DESSERIALIZAÇÃO
+                                    fn($unidade) => UnidadeItem::deArray(is_array($unidade) ? $unidade : []),
+                                    $dados['inventario'])),
                 'vendas'     => $dados['vendas'],
             ];
-        } catch (JsonException | ValueError | TypeError $erro) {
+        } catch (SaveCorrompidoException | JsonException | DateMalformedStringException | ValueError | InvalidArgumentException $erro) {
+            // SaveCorrompido: faltou campo | Json: não é JSON | DateMalformed: data inválida
+            // ValueError: qualidade fora de 0-3 | InvalidArgument: tipo de item desconhecido ou preço <= 0
             error_log("Save corrompido ($arquivo): " . $erro->getMessage());
             return null;                      // trata o erro: segue sem o save, sem quebrar a página
         }

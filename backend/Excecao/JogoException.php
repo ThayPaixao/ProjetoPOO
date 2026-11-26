@@ -11,4 +11,12 @@ class JogoException extends RuntimeException
     {
         return 400;
     }
+
+    /* Código fixo que o front usa para decidir o que mostrar (ex.: "saldo_insuficiente").
+       Assim o JavaScript não depende do texto da mensagem, que pode mudar.
+       POLIMORFISMO: cada subclasse devolve o seu. */
+    public function codigo(): string
+    {
+        return 'erro_do_jogo';
+    }
 }
