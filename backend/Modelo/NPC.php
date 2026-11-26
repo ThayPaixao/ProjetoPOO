@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /* NPC – classe base (abstrata) dos personagens do jogo.
    HERANÇA: Vendedor (você compra dele) e Cliente (você vende para ele). */
-abstract class NPC
+abstract class NPC implements JsonSerializable
 {
     protected string $id;         // 'pierre', 'elliott'... é o id usado nas rotas do front
     protected string $nome;
@@ -25,6 +25,11 @@ abstract class NPC
     public function getId(): string { return $this->id; }
     public function getNome(): string { return $this->nome; }
     public function getImagem(): ?string { return $this->imagem; }
+
+    public function jsonSerialize(): array
+    {
+        return $this->paraArray();
+    }
 
     /* Formato do front: { id, nome, imagem } */
     public function paraArray(): array

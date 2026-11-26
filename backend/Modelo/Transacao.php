@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 /* Transacao – classe base (abstrata) de Compra e Venda.
    As duas têm jogador, unidade, NPC e data; o que muda é o valor e o efeito no saldo. */
-abstract class Transacao
+abstract class Transacao implements JsonSerializable
 {
     protected ?int $id = null;
     protected Jogador $jogador;
@@ -41,6 +41,18 @@ abstract class Transacao
             throw new LogicException('Esta transação já tem id.');
         }
         $this->id = $id;
+    }
+
+    /* SERIALIZAÇÃO: usa getTipo() e getValor() de cada filha (Compra/Venda). */
+    public function jsonSerialize(): array
+    {
+        return [
+            'tipo'    => $this->getTipo(),
+            'valor'   => $this->getValor(),
+            'npc'     => $this->npc,
+            'unidade' => $this->unidade,
+            'data'    => $this->data->format(DATE_ATOM),
+        ];
     }
 
     public function getId(): ?int { return $this->id; }

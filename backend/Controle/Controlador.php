@@ -15,6 +15,7 @@ class Controlador
     private JogadorRepositorio $jogadores;
     private TransacaoRepositorio $transacoes;
     private FotoRepositorio $fotos;
+    private SaveRepositorio $saves;
 
     public function __construct(PDO $pdo, array $corpo, array $consulta, array $arquivos = [])
     {
@@ -23,6 +24,7 @@ class Controlador
         $this->consulta = $consulta;
         $this->arquivos = $arquivos;
         $this->fotos = new FotoRepositorio();
+        $this->saves = new SaveRepositorio();
         $this->itens = new ItemRepositorio($pdo);
         $this->npcs = new NpcRepositorio($pdo, $this->itens);
         $this->jogadores = new JogadorRepositorio($pdo);
@@ -65,15 +67,55 @@ class Controlador
             throw new NaoAutenticadoException('E-mail ou senha incorretos.');
         }
         $this->iniciarSessao($jogador);
-        return ['ok' => true, 'usuario' => $jogador->paraArray()];
+        $save = $this->saves->carregar((int) $jogador->getId());          // CARREGAR NA VOLTA
+        return [
+            'ok'          => true,
+            'usuario'     => $jogador->paraArray(),
+            'ultimo_save' => $save ? $save['salvo_em']->format(DATE_ATOM) : null,
+        ];
     }
 
-    /* POST /api/logout */
+    /* POST /api/logout – salva o jogo antes de sair (SALVAR NA SAÍDA) */
     public function sair(): array
     {
+        if (is_int($_SESSION['id_jogador'] ?? null)) {
+            try {
+                $this->salvarJogo();
+            } catch (Throwable $erro) {
+                error_log('Falha no save da saída: ' . $erro->getMessage());   // não impede o logout
+            }
+        }
         $_SESSION = [];
         session_destroy();
         return ['ok' => true];
+    }
+
+    // ---------- save do jogo (persistência em arquivo JSON) ----------
+
+    /* POST /api/usuario/salvar – chamado pela THREAD de auto-save (a cada 30 s) e na saída da página */
+    public function salvarJogo(): array
+    {
+        $jogador = $this->jogadorLogado();
+        $id = (int) $jogador->getId();
+        $resultado = $this->saves->salvar($jogador, $this->transacoes->inventario($id), $this->transacoes->vendas($id));
+        return ['ok' => true, ...$resultado];
+    }
+
+    /* GET /api/usuario/save – lê o último save do arquivo (objetos reconstruídos a partir do JSON) */
+    public function carregarJogo(): array
+    {
+        $save = $this->saves->carregar($this->idJogadorLogado());
+        if ($save === null) {
+            return ['existe' => false];
+        }
+        return [
+            'existe'     => true,
+            'salvo_em'   => $save['salvo_em']->format(DATE_ATOM),
+            'arquivo'    => $save['arquivo'],
+            'dinheiro'   => $save['dinheiro'],
+            'inventario' => $save['inventario'],     // UnidadeItem[]: o json_encode usa o jsonSerialize() de cada um
+            'vendas'     => count($save['vendas']),
+        ];
     }
 
     // ---------- perfil ----------

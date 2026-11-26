@@ -59,3 +59,4 @@
 .editar { gap: 1rem; }
 .editar__titulo { font-size: 1.2rem; text-align: center; }
 .editar__subtitulo { margin-top: .4rem; font-size: .85rem; font-weight: 700; color: var(--neutra-escura); }
+.perfil__save { font-size: .75rem; text-align: center; color: var(--contraste); opacity: .8; }

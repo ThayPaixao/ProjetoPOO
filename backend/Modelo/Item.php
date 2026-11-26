@@ -5,7 +5,7 @@ declare(strict_types=1);
    HERANÇA: Peixe, Colheita, Comida e Minerio herdam daqui.
    Um objeto Item é o item do catálogo (ex.: "Atum, 100 g"). A unidade que o
    jogador compra, com a qualidade e o tamanho sorteados, é um UnidadeItem. */
-abstract class Item
+abstract class Item implements JsonSerializable
 {
     protected int $id;
     protected string $nome;
@@ -57,6 +57,12 @@ abstract class Item
     public function getNome(): string { return $this->nome; }
     public function getPrecoBase(): int { return $this->precoBase; }
     public function getImagem(): ?string { return $this->imagem; }
+
+    /* SERIALIZAÇÃO: json_encode($item) usa este método (interface JsonSerializable). */
+    public function jsonSerialize(): array
+    {
+        return $this->paraArray();
+    }
 
     /* Formato que o front espera (js/api.js): { id, nome, preco, tipo, qualidade, imagem } */
     public function paraArray(): array

@@ -4,7 +4,7 @@ declare(strict_types=1);
 /* UnidadeItem – uma unidade concreta que o jogador tem no inventário.
    Guarda o que foi sorteado na compra (qualidade e tamanho) e quanto custou,
    porque o preço que os NPCs pagam depende do valor pago. */
-class UnidadeItem
+class UnidadeItem implements JsonSerializable
 {
     private ?int $id;             // id da compra no banco (null enquanto não foi salva)
     private Item $item;
@@ -44,6 +44,30 @@ class UnidadeItem
             $detalhes .= ", {$this->tamanhoCm} cm";
         }
         return "{$this->item->getNome()} ($detalhes)";
+    }
+
+    /* SERIALIZAÇÃO para o save: guarda tudo o que é preciso para reconstruir a unidade depois. */
+    public function jsonSerialize(): array
+    {
+        return [
+            'id'         => $this->id,
+            'item'       => $this->item,                 // o Item se serializa sozinho
+            'qualidade'  => $this->qualidade->value,
+            'tamanho_cm' => $this->tamanhoCm,
+            'preco_pago' => $this->precoPago,
+        ];
+    }
+
+    /* DESSERIALIZAÇÃO: o caminho contrário, do array lido do JSON de volta para o objeto. */
+    public static function deArray(array $dados): self
+    {
+        $i = $dados['item'];
+        return new self(
+            Item::criar($i['tipo'], (int) $i['id'], $i['nome'], (int) $i['preco'], $i['imagem'] ?? null),
+            Qualidade::from((int) $dados['qualidade']),
+            $dados['tamanho_cm'] === null ? null : (int) $dados['tamanho_cm'],
+            (int) $dados['preco_pago'],
+            $dados['id'] === null ? null : (int) $dados['id']);
     }
 
     /* Mesmo formato do Item, mas com o preço pago e a qualidade desta unidade.

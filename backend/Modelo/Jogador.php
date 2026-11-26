@@ -5,7 +5,7 @@ declare(strict_types=1);
    ENCAPSULAMENTO: o saldo e a senha são privados. O saldo só muda por
    debitar() e creditar(), que validam o valor; a senha nunca sai da classe
    (só dá para conferir com verificarSenha()). */
-class Jogador
+class Jogador implements JsonSerializable
 {
     public const SALDO_INICIAL = 1000;
     public const SENHA_MINIMA = 6;      // igual ao minlength do register.html
@@ -112,6 +112,12 @@ class Jogador
     public function getSaldo(): int { return $this->saldo; }
     public function getFoto(): ?string { return $this->foto; }
     public function getSenhaHash(): string { return $this->senhaHash; }   // só para salvar no banco
+
+    /* SERIALIZAÇÃO: a senha nunca entra no JSON. */
+    public function jsonSerialize(): array
+    {
+        return $this->paraArray();
+    }
 
     /* Formato do front: { id, nome, dinheiro, foto }. A senha nunca vai junto. */
     public function paraArray(): array

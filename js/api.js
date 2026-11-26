@@ -54,6 +54,9 @@ const API = (() => {
     /* POST /api/usuario/perfil   FormData { nome, senha_atual?, nova_senha?, confirmacao_senha?, foto? } */
     async editarPerfil(dados) { return enviar('usuario/perfil', dados); },
 
+    /* GET /api/usuario/save  → último save em arquivo { existe, salvo_em, arquivo, dinheiro, inventario, vendas } */
+    async carregarSave() { return buscar('usuario/save'); },
+
     /* POST /api/logout */
     async sair() { return enviar('logout'); },
 

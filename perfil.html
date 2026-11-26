@@ -63,6 +63,8 @@
             <div class="perfil__dados">
               <p class="perfil__info" id="perfil-nome">Nome</p>
               <p class="perfil__info" id="perfil-dinheiro">Money</p>
+              <!-- save em arquivo: carregado ao abrir a página e atualizado pela thread de auto-save -->
+              <p class="perfil__save" id="perfil-save" data-autosave></p>
             </div>
 
             <div class="perfil__botoes">
@@ -159,6 +161,7 @@
   </template>
 
   <script src="js/menu.js"></script>
+  <script src="js/autosave.js"></script>
   <script src="js/api.js"></script>
   <script src="js/render.js"></script>
   <script src="js/foto.js"></script>

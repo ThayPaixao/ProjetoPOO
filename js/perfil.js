@@ -54,6 +54,14 @@ formPerfil.addEventListener('submit', async (e) => {
   dialogoPerfil.close();
 });
 
+/* save em arquivo: mostra o último save carregado do servidor */
+function mostrarSave(save) {
+  const el = document.getElementById('perfil-save');
+  el.textContent = save.existe
+    ? `Save carregado: ${new Date(save.salvo_em).toLocaleString('pt-BR')} (${save.inventario.length} itens)`
+    : 'Ainda sem save (o auto-save salva a cada 30 s)';
+}
+
 /* ---------- carrega a página ---------- */
 (async () => {
   try {
@@ -61,6 +69,7 @@ formPerfil.addEventListener('submit', async (e) => {
       API.getUsuario(), API.getInventario(), API.getHistoricoVendas(),
     ]);
     mostrarUsuario(usuario);
+    mostrarSave(await API.carregarSave());
     Render.lista(document.getElementById('inventario-lista'), inventario, 'tpl-item-card',
       { vazio: 'Seu inventário está vazio.' });
     Render.lista(document.getElementById('historico-lista'),

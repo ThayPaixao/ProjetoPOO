@@ -22,6 +22,7 @@ backend/        classes PHP (POO)
 database/       schema.sql (tabelas), seed.sql (254 itens, NPCs e gostos) e GOSTOS.md (quem ama/odeia o quê)
 router.php      roteador do servidor do PHP
 uploads/fotos/  fotos de perfil enviadas no cadastro (criada sozinha; não vai para o GitHub)
+saves/          saves do jogo em JSON, um por jogador (criada sozinha; não vai para o GitHub)
 ```
 
 ## Para abrir
@@ -68,6 +69,18 @@ Erros voltam como `{ ok: false, erro: "mensagem" }`.
 - Itens usam `<template>` (em `perfil.html` e `lojas.html`); `data-slot="campo"` marca onde cada campo entra
   (campo que o item não tem, como `tamanho_cm` fora dos peixes, fica escondido).
 - Modelo de item: `{ id, nome, preco, tipo, qualidade (0-3), imagem, tamanho_cm }`.
+
+## Requisitos do trabalho – onde está cada um
+| Requisito | Onde |
+|---|---|
+| Classes, herança, polimorfismo, encapsulamento | `backend/Modelo/` (`Item` → `Peixe`/`Colheita`/`Comida`/`Minerio`, `NPC` → `Vendedor`/`Cliente`, `Transacao` → `Compra`/`Venda`, `Jogador`); `php backend/demo.php` mostra tudo |
+| **Persistência** (salvar na saída, carregar na volta) | `backend/Repositorio/SaveRepositorio.php` grava o jogo em `saves/jogador-<id>.json`; o logout salva antes de sair e o login/perfil carregam o último save |
+| **Serialização** | as classes implementam `JsonSerializable` (`jsonSerialize()`); na volta, `UnidadeItem::deArray()` + `Item::criar()` reconstroem os objetos a partir do JSON |
+| **Threads** (auto-save) | `js/autosave-worker.js`: um Web Worker (thread separada da tela) salva a cada 30 s; `js/autosave.js` liga a thread e salva também ao sair da página |
+| Entrada/Saída | save em arquivo, upload da foto (`FotoRepositorio`), leitura do `.env` |
+| Tratamento de erros | exceções do jogo (`backend/Excecao/`), `try/catch` da API, transação com rollback na compra/venda, save corrompido não derruba o site |
+| Padrões de projeto | **Factory** (`Item::criar`, `NpcRepositorio::criar`), **Repository** (`backend/Repositorio/`), **Singleton** (`Conexao`), **Template Method** (`Transacao::descricao()`), **Front Controller** (`api/index.php` → `Controlador`) |
+| Collections | mapas e listas: catálogo do `Vendedor` (id → Item), gostos do `Cliente` (id → Sentimento), inventário e histórico |
 
 ## Créditos
 Imagens dos itens e retratos dos NPCs: [Stardew Valley Wiki](https://stardewvalleywiki.com/) — Stardew Valley © ConcernedApe. Uso apenas educacional.
