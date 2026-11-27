@@ -1,6 +1,11 @@
 -- schema.sql – estrutura do banco (PostgreSQL / Supabase)
 -- Como usar: Supabase → SQL Editor → cole este arquivo → Run. Depois faça o mesmo com o seed.sql.
 -- Rodar de novo APAGA tudo e recria do zero.
+--
+-- BRANCH "melhorias": tudo aqui acontece na CÓPIA do banco (schema "melhorias"), por causa do SET abaixo.
+-- O original ("public"), usado pela versão entregue, nunca é tocado. Se a cópia ainda não existir,
+-- crie com o copia-melhorias.sql (sem ela, este arquivo dá erro e não faz nada).
+SET search_path TO melhorias;
 
 DROP VIEW IF EXISTS historico, inventario;
 DROP TABLE IF EXISTS venda, compra, jogador, npc_sentimento, item, loja, npc,

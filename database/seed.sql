@@ -1,6 +1,8 @@
 -- seed.sql – dados do jogo (rode DEPOIS do schema.sql)
 -- Versão 3: todos os peixes, colheitas, comidas e minérios do Stardew Valley (preços da wiki oficial).
 -- Pode rodar de novo quando quiser: atualiza itens e gostos SEM apagar jogadores, compras e vendas.
+-- BRANCH "melhorias": grava só na CÓPIA do banco (schema "melhorias"); o original ("public") não é tocado.
+SET search_path TO melhorias;
 
 INSERT INTO classificacao (id_classificacao, nome) VALUES
   (1, 'Peixe'), (2, 'Colheita'), (3, 'Comida'), (4, 'Minério')
