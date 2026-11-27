@@ -29,6 +29,18 @@ uploads/fotos/  fotos de perfil enviadas no cadastro (criada sozinha; não vai p
 saves/          saves do jogo em JSON, um por jogador (criada sozinha; não vai para o GitHub)
 ```
 
+## Branches e banco
+| Branch | O que é | Banco (schema no Supabase) |
+|---|---|---|
+| `backend` | a versão **entregue ao professor** (tag `entrega-parte-2`); não mexer | `public` (o original) |
+| `melhorias` | onde o trabalho continua | `melhorias` (uma cópia do original, feita em 27/11) |
+
+As duas usam o mesmo Supabase e o mesmo `.env`, mas cada uma lê o seu schema: o que acontece na `melhorias`
+(compras, contas, tabelas novas) não aparece na versão entregue. Quem escolhe o schema é o `Conexao.php`.
+Nesta branch, o `schema.sql` e o `seed.sql` também só mexem na cópia. A cópia foi criada pelo
+`database/copia-melhorias.sql` (rodar uma vez só; para refazer do zero, `DROP SCHEMA melhorias CASCADE` apaga só a cópia).
+O `php backend/verificar_banco.php` mostra qual schema está em uso.
+
 ## Para abrir
 Precisa do PHP (`sudo apt install php-cli php-pgsql php-mbstring`) e do arquivo `.env`.
 
