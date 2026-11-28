@@ -3,6 +3,7 @@
   const estado = { modo: 'comprar', npc: null, pedido: 0, itens: [] };
 
   const grade = document.getElementById('loja-itens');
+  const filtros = document.querySelector('.loja__filtros');
   const busca = document.getElementById('loja-busca');
   const categoria = document.getElementById('loja-categoria');
   const contagem = document.getElementById('loja-contagem');
@@ -69,12 +70,15 @@
     categoria.hidden = tipos.length < 2;               // uma categoria só: o filtro não ajuda
   }
 
+  /* A busca e o filtro existem só na aba Comprar (catálogo da loja). Na aba Vender (o seu inventário) somem. */
   function filtrar() {
     const comprando = estado.modo === 'comprar';
-    const termo = simplificar(busca.value);
+    filtros.hidden = !comprando;
+    const termo = comprando ? simplificar(busca.value) : '';
+    const tipo = comprando ? categoria.value : '';
     const visiveis = estado.itens.filter(item =>
-      (!categoria.value || item.tipo === categoria.value) && simplificar(item.nome).includes(termo));
-    const filtrando = termo !== '' || categoria.value !== '';
+      (!tipo || item.tipo === tipo) && simplificar(item.nome).includes(termo));
+    const filtrando = termo !== '' || tipo !== '';
     contagem.textContent = filtrando ? `${visiveis.length} de ${estado.itens.length} itens` : `${estado.itens.length} itens`;
     Render.lista(grade, visiveis, 'tpl-item-card', {
       textoAcao: comprando ? 'Comprar' : 'Vender',

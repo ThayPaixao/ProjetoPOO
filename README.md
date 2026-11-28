@@ -64,7 +64,7 @@ Outros comandos:
 - **Lojas (5):** Pierre (colheitas, coletáveis, conservas), Gus (comidas e bebidas), Willy (peixes e coisas da praia),
   Clint (minerais, minérios e barras) e Marnie (produtos de animais, queijos, maionese e tecido). Lojista só vende.
 - **Moradores (29)** compram de você; cada um tem seus gostos (versão 4 do `GOSTOS.md`).
-  A loja tem **busca** (sem acento e sem maiúscula) e **filtro por categoria**.
+  Na aba **Comprar**, a loja tem **busca** (sem acento e sem maiúscula) e **filtro por categoria**; na aba Vender, não.
 - **Ranking da vila**: quem mais lucrou vendendo (lucro = o que recebeu − o que pagou). Contas de teste
   (e-mail `@exemplo.com`) ficam de fora.
 - **Conquistas**: 8 medalhas (primeira compra, irídio, peixe de 45 cm, comprar em todas as lojas, vender para todos os
