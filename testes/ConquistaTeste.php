@@ -56,7 +56,8 @@ class ConquistaTeste extends Teste
     {
         foreach (Conquista::cases() as $conquista) {
             $this->verificar($conquista->nome() !== '' && $conquista->descricao() !== '', "$conquista->value sem texto");
-            $this->verificar($conquista->meta() > 0, "$conquista->value com meta inválida");
+            $this->verificar($conquista->meta(new Estatisticas(totalLojas: 5, totalClientes: 29)) > 0,
+                "$conquista->value com meta inválida");
             $this->verificar(!$conquista->alcancada(new Estatisticas()), "$conquista->value não pode vir conquistada no começo");
         }
     }
@@ -85,10 +86,27 @@ class ConquistaTeste extends Teste
 
     public function testeVendaParaOSextoMoradorLiberaConhecerTodoMundo(): void
     {
-        $antes = new Estatisticas(compras: 6, vendas: 5, clientes: ['abigail', 'harvey', 'leah', 'penny', 'sebastian']);
+        $antes = new Estatisticas(compras: 6, vendas: 5, clientes: ['abigail', 'harvey', 'leah', 'penny', 'sebastian'],
+                                  totalClientes: 6);
         $observador = $this->observadorCom($antes);
         $observador->notificar(new Venda($this->jogador, new UnidadeItem($this->atum, Qualidade::NORMAL, 10, 100, 1), $this->elliott));
         $this->verificar(in_array(Conquista::CONHECE_TODO_MUNDO, $observador->novas(), true),
             'vender para o 6º morador deveria liberar "Conhece todo mundo"');
+    }
+
+    /* As metas de lojas e moradores vêm do banco: com mais moradores, a meta sobe junto. */
+    public function testeMetaDeMoradoresSegueOTotalDoBanco(): void
+    {
+        $seis = new Estatisticas(clientes: ['a', 'b', 'c', 'd', 'e', 'f'], totalClientes: 6);
+        $mais = new Estatisticas(clientes: ['a', 'b', 'c', 'd', 'e', 'f'], totalClientes: 29);
+        $this->verificar(Conquista::CONHECE_TODO_MUNDO->alcancada($seis), 'com 6 moradores no banco, 6 bastam');
+        $this->verificar(!Conquista::CONHECE_TODO_MUNDO->alcancada($mais), 'com 29 moradores no banco, 6 não bastam');
+        $this->verificarIgual(29, Conquista::CONHECE_TODO_MUNDO->meta($mais), 'meta');
+    }
+
+    public function testeSemTotalInformadoNaoDaParaConquistar(): void
+    {
+        $e = new Estatisticas(lojas: ['willy', 'pierre', 'gus', 'clint']);
+        $this->verificar(!Conquista::FREGUES_DA_VILA->alcancada($e), 'total de lojas 0 = desconhecido');
     }
 }

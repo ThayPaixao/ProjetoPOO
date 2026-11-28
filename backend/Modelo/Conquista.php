@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 /* Conquista – as medalhas do jogo. Cada uma tem uma META e diz quanto o jogador já tem
    (progresso). Está conquistada quando o progresso chega na meta.
+   As metas de "todas as lojas" e "todos os moradores" vêm do banco (dentro das Estatisticas),
+   então continuam certas quando entra uma loja ou um morador novo.
    O valor (texto) é o id que vai para o front. */
 enum Conquista: string
 {
@@ -14,9 +16,6 @@ enum Conquista: string
     case ACERTOU_EM_CHEIO   = 'acertou_em_cheio';
     case CONHECE_TODO_MUNDO = 'conhece_todo_mundo';
     case MAO_BOA            = 'mao_boa';
-
-    public const TOTAL_LOJAS = 4;       // Willy, Pierre, Gus e Clint
-    public const TOTAL_CLIENTES = 6;    // Elliott, Harvey, Sebastian, Abigail, Leah e Penny
 
     public function nome(): string
     {
@@ -39,22 +38,22 @@ enum Conquista: string
             self::PRIMEIRA_VENDA     => 'Venda o seu primeiro item.',
             self::SORTE_DE_IRIDIO    => 'Ganhe um item de qualidade Irídio.',
             self::PEIXE_DE_RESPEITO  => 'Compre um peixe de 45 cm ou mais.',
-            self::FREGUES_DA_VILA    => 'Compre nas ' . self::TOTAL_LOJAS . ' lojas da vila.',
+            self::FREGUES_DA_VILA    => 'Compre em todas as lojas da vila.',
             self::ACERTOU_EM_CHEIO   => 'Venda 5 itens para quem ama o item.',
-            self::CONHECE_TODO_MUNDO => 'Venda para os ' . self::TOTAL_CLIENTES . ' moradores.',
+            self::CONHECE_TODO_MUNDO => 'Venda para todos os moradores.',
             self::MAO_BOA            => 'Some 1.000 g de lucro nas vendas.',
         };
     }
 
-    /* Quanto é preciso para conquistar. */
-    public function meta(): int
+    /* Quanto é preciso para conquistar. Lojas e moradores: o total que existe no banco. */
+    public function meta(Estatisticas $e): int
     {
         return match ($this) {
             self::PRIMEIRA_COMPRA, self::PRIMEIRA_VENDA, self::SORTE_DE_IRIDIO => 1,
             self::PEIXE_DE_RESPEITO  => 45,
-            self::FREGUES_DA_VILA    => self::TOTAL_LOJAS,
+            self::FREGUES_DA_VILA    => $e->totalLojas,
             self::ACERTOU_EM_CHEIO   => 5,
-            self::CONHECE_TODO_MUNDO => self::TOTAL_CLIENTES,
+            self::CONHECE_TODO_MUNDO => $e->totalClientes,
             self::MAO_BOA            => 1000,
         };
     }
@@ -72,12 +71,14 @@ enum Conquista: string
             self::CONHECE_TODO_MUNDO => count($e->clientes),
             self::MAO_BOA            => $e->lucro,
         };
-        return max(0, min($valor, $this->meta()));
+        return max(0, min($valor, $this->meta($e)));
     }
 
+    /* Meta 0 = o total não é conhecido (ex.: Estatisticas criadas num teste): aí não dá para conquistar. */
     public function alcancada(Estatisticas $e): bool
     {
-        return $this->progresso($e) >= $this->meta();
+        $meta = $this->meta($e);
+        return $meta > 0 && $this->progresso($e) >= $meta;
     }
 
     /* Formato do front: { id, nome, descricao, progresso, meta, conquistada } */
@@ -88,7 +89,7 @@ enum Conquista: string
             'nome'        => $this->nome(),
             'descricao'   => $this->descricao(),
             'progresso'   => $this->progresso($e),
-            'meta'        => $this->meta(),
+            'meta'        => $this->meta($e),
             'conquistada' => $this->alcancada($e),
         ];
     }

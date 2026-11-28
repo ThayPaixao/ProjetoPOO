@@ -136,13 +136,16 @@ class TransacaoRepositorio
                     (SELECT count(*) FROM v)                                   AS vendas,
                     (SELECT count(*) FROM v WHERE id_sentimento = ?)           AS amadas,
                     (SELECT coalesce(string_agg(DISTINCT id_npc, ','), '') FROM v) AS clientes,
-                    (SELECT coalesce(sum(lucro), 0) FROM v)                    AS lucro");
+                    (SELECT coalesce(sum(lucro), 0) FROM v)                    AS lucro,
+                    (SELECT count(*) FROM loja)                                AS total_lojas,
+                    (SELECT count(*) FROM npc WHERE tipo = 'CLIENTE')          AS total_clientes");
         $consulta->execute([$idJogador, Qualidade::IRIDIO->value, Sentimento::AMA->value]);
         $linha = $consulta->fetch();
         $lista = fn(string $ids) => $ids === '' ? [] : explode(',', $ids);
         return new Estatisticas((int) $linha['compras'], (int) $linha['iridio'], (int) $linha['maior_peixe'],
             $lista($linha['lojas']), (int) $linha['vendas'], (int) $linha['amadas'],
-            $lista($linha['clientes']), (int) $linha['lucro']);
+            $lista($linha['clientes']), (int) $linha['lucro'],
+            (int) $linha['total_lojas'], (int) $linha['total_clientes']);
     }
 
     /* Diário de gostos: o que o jogador já descobriu vendendo, por morador.

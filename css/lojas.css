@@ -61,6 +61,17 @@
 .loja__itens { min-height: 0; overflow-y: auto; padding: 1.5rem 2rem; }
 .loja__aviso { min-height: 1.4em; margin-bottom: .75rem; font-size: .9rem; }
 
+/* busca e filtro por categoria (em cima da grade) */
+.loja__filtros { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-bottom: .6rem; }
+.loja__busca, .loja__categoria {
+  padding: .45rem .8rem; font: inherit; font-size: .9rem; color: var(--contraste);
+  background: var(--fundo); border: 2px solid var(--neutra); border-radius: 999px;
+}
+.loja__busca { flex: 1 1 200px; min-width: 0; }
+.loja__categoria { flex: 0 1 auto; cursor: pointer; }
+.loja__categoria[hidden] { display: none; }
+.loja__contagem { font-size: .8rem; opacity: .8; white-space: nowrap; }
+
 @media (max-width: 900px) {
   .loja { grid-template-columns: 1fr; grid-template-rows: auto auto minmax(0, 1fr); height: auto; }
   .aba { width: auto; flex: 1; font-size: 1.2rem; }

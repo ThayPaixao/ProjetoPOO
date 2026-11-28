@@ -45,11 +45,14 @@ abstract class Item implements JsonSerializable
     public static function criar(string $tipo, int $id, string $nome, int $precoBase, ?string $imagem = null): Item
     {
         return match ($tipo) {
-            'Peixe'    => new Peixe($id, $nome, $precoBase, $imagem),
-            'Colheita' => new Colheita($id, $nome, $precoBase, $imagem),
-            'Comida'   => new Comida($id, $nome, $precoBase, $imagem),
-            'Minério'  => new Minerio($id, $nome, $precoBase, $imagem),
-            default    => throw new InvalidArgumentException("Tipo de item desconhecido: $tipo"),
+            'Peixe'          => new Peixe($id, $nome, $precoBase, $imagem),
+            'Colheita'       => new Colheita($id, $nome, $precoBase, $imagem),
+            'Comida'         => new Comida($id, $nome, $precoBase, $imagem),
+            'Minério'        => new Minerio($id, $nome, $precoBase, $imagem),
+            'Coletável'      => new Coletavel($id, $nome, $precoBase, $imagem),
+            'Produto Animal' => new ProdutoAnimal($id, $nome, $precoBase, $imagem),
+            'Artesanato'     => new Artesanato($id, $nome, $precoBase, $imagem),
+            default          => throw new InvalidArgumentException("Tipo de item desconhecido: $tipo"),
         };
     }
 

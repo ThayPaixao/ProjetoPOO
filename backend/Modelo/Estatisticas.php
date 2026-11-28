@@ -10,6 +10,8 @@ final class Estatisticas
     /**
      * @param string[] $lojas     ids dos vendedores de quem já comprou (sem repetir)
      * @param string[] $clientes  ids dos moradores para quem já vendeu (sem repetir)
+     * $totalLojas e $totalClientes: quantos existem no banco (as metas de "Freguês da vila" e
+     * "Conhece todo mundo"). Zero = não informado.
      */
     public function __construct(
         public readonly int $compras = 0,
@@ -20,6 +22,8 @@ final class Estatisticas
         public readonly int $vendasParaQuemAma = 0,
         public readonly array $clientes = [],
         public readonly int $lucro = 0,
+        public readonly int $totalLojas = 0,
+        public readonly int $totalClientes = 0,
     ) {
     }
 
@@ -31,7 +35,8 @@ final class Estatisticas
             $this->comprasIridio + ($unidade->getQualidade() === Qualidade::IRIDIO ? 1 : 0),
             max($this->maiorPeixeCm, $unidade->getTamanhoCm() ?? 0),
             self::semRepetir([...$this->lojas, $idVendedor]),
-            $this->vendas, $this->vendasParaQuemAma, $this->clientes, $this->lucro);
+            $this->vendas, $this->vendasParaQuemAma, $this->clientes, $this->lucro,
+            $this->totalLojas, $this->totalClientes);
     }
 
     /* As estatísticas depois de mais uma venda para o morador $idCliente. */
@@ -42,7 +47,8 @@ final class Estatisticas
             $this->vendas + 1,
             $this->vendasParaQuemAma + ($sentimento === Sentimento::AMA ? 1 : 0),
             self::semRepetir([...$this->clientes, $idCliente]),
-            $this->lucro + $lucro);
+            $this->lucro + $lucro,
+            $this->totalLojas, $this->totalClientes);
     }
 
     /** @param string[] $ids  @return string[] */

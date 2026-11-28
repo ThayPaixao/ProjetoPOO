@@ -6,7 +6,8 @@ class ItemTeste extends Teste
 {
     public function testeFabricaCriaASubclasseCerta(): void
     {
-        $tipos = ['Peixe' => Peixe::class, 'Colheita' => Colheita::class, 'Comida' => Comida::class, 'Minério' => Minerio::class];
+        $tipos = ['Peixe' => Peixe::class, 'Colheita' => Colheita::class, 'Comida' => Comida::class, 'Minério' => Minerio::class,
+                  'Coletável' => Coletavel::class, 'Produto Animal' => ProdutoAnimal::class, 'Artesanato' => Artesanato::class];
         foreach ($tipos as $tipo => $classe) {
             $item = Item::criar($tipo, 1, 'Teste', 10);
             $this->verificar($item instanceof $classe, "\"$tipo\" deveria virar $classe, virou " . get_class($item));

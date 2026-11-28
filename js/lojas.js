@@ -1,8 +1,11 @@
 /* lojas.js – abas Comprar/Vender, lista de NPCs (muda conforme a aba) e botões de ação */
 (() => {
-  const estado = { modo: 'comprar', npc: null, pedido: 0 };
+  const estado = { modo: 'comprar', npc: null, pedido: 0, itens: [] };
 
   const grade = document.getElementById('loja-itens');
+  const busca = document.getElementById('loja-busca');
+  const categoria = document.getElementById('loja-categoria');
+  const contagem = document.getElementById('loja-contagem');
   const aviso = document.getElementById('loja-aviso');
   const dinheiro = document.getElementById('loja-dinheiro');
   const listaNpcs = document.getElementById('npcs-lista');
@@ -44,15 +47,45 @@
     try {
       const itens = comprando ? await API.getItensLoja(estado.npc) : await API.getInventario();
       if (pedido !== estado.pedido) return;
-      Render.lista(grade, itens, 'tpl-item-card', {
-        textoAcao: comprando ? 'Comprar' : 'Vender',
-        vazio: comprando ? 'Esta loja não tem itens.' : 'Você não tem nada para vender.',
-        prefixoPreco: comprando ? 'a partir de ' : 'pagou ',   // na compra, qualidade (e tamanho do peixe) são sorteados
-      });
+      estado.itens = itens;
+      montarCategorias(itens);
+      filtrar();
     } catch (erro) {
       aviso.textContent = erro.message;
     }
   }
+
+  /* ---------- busca e filtro (só nos itens já carregados) ---------- */
+
+  /* "Cogumelo Comum" e "cogumelo comum" e "cogumélo" acham a mesma coisa: sem acento e sem maiúscula */
+  const simplificar = (texto) => texto.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase().trim();
+
+  /* As opções do filtro são as categorias que existem nesta lista (a escolhida continua, se ainda existir) */
+  function montarCategorias(itens) {
+    const escolhida = categoria.value;
+    const tipos = [...new Set(itens.map(item => item.tipo))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    categoria.replaceChildren(new Option('Todas as categorias', ''), ...tipos.map(tipo => new Option(tipo, tipo)));
+    categoria.value = tipos.includes(escolhida) ? escolhida : '';
+    categoria.hidden = tipos.length < 2;               // uma categoria só: o filtro não ajuda
+  }
+
+  function filtrar() {
+    const comprando = estado.modo === 'comprar';
+    const termo = simplificar(busca.value);
+    const visiveis = estado.itens.filter(item =>
+      (!categoria.value || item.tipo === categoria.value) && simplificar(item.nome).includes(termo));
+    const filtrando = termo !== '' || categoria.value !== '';
+    contagem.textContent = filtrando ? `${visiveis.length} de ${estado.itens.length} itens` : `${estado.itens.length} itens`;
+    Render.lista(grade, visiveis, 'tpl-item-card', {
+      textoAcao: comprando ? 'Comprar' : 'Vender',
+      vazio: filtrando ? 'Nenhum item com esse filtro.'
+           : comprando ? 'Esta loja não tem itens.' : 'Você não tem nada para vender.',
+      prefixoPreco: comprando ? 'a partir de ' : 'pagou ',   // na compra, qualidade (e tamanho do peixe) são sorteados
+    });
+  }
+
+  busca.addEventListener('input', filtrar);
+  categoria.addEventListener('change', filtrar);
 
   abas.forEach(aba => aba.addEventListener('click', async () => {
     estado.modo = aba.dataset.modo;
