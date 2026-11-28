@@ -11,11 +11,12 @@ vila.html       ranking da vila, conquistas e diário de gostos
 css/            base, components, auth, menu, home, itens, perfil, lojas, popup, vila...
 js/             menu, auth, api (fala com o back-end), render (templates), perfil, lojas, vila,
                 autosave + autosave-worker (thread)
-assets/img/     itens/ (254 imagens) e npcs/ (10 retratos) do jogo + placeholders
+assets/img/     itens/ (254 imagens) e npcs/ (10 retratos) do jogo + placeholders (os 88 itens e 24 NPCs
+                da versão 4 ainda usam a imagem padrão)
 
 api/index.php   API: recebe as chamadas do js/api.js e devolve JSON
 backend/        classes PHP (POO)
-  Modelo/         Item → Peixe, Colheita, Comida, Minerio | NPC → Vendedor, Cliente
+  Modelo/         Item → Peixe, Colheita, Comida, Minerio, Coletavel, ProdutoAnimal, Artesanato | NPC → Vendedor, Cliente
                   Transacao → Compra, Venda | Jogador | UnidadeItem | Qualidade, Sentimento
                   Colecao<T> | Conquista, Estatisticas | QuadroDeAvisos + ObservadorDeTransacao (Observer)
   Excecao/        erros do jogo (JogoException → SaldoInsuficiente, NaoEncontrado...) e SaveCorrompido
@@ -23,7 +24,7 @@ backend/        classes PHP (POO)
   Controle/       Controlador: uma função para cada rota da API
   demo.php        mostra herança/polimorfismo/encapsulamento no terminal
 testes/         testes automáticos (mini framework próprio): php testes/rodar.php
-database/       schema.sql (tabelas), seed.sql (254 itens, NPCs e gostos) e GOSTOS.md (quem ama/odeia o quê)
+database/       schema.sql (tabelas), seed.sql (342 itens, 34 NPCs e gostos) e GOSTOS.md (quem ama/odeia o quê)
 router.php      roteador do servidor do PHP
 uploads/fotos/  fotos de perfil enviadas no cadastro (criada sozinha; não vai para o GitHub)
 saves/          saves do jogo em JSON, um por jogador (criada sozinha; não vai para o GitHub)
@@ -50,7 +51,7 @@ Precisa do PHP (`sudo apt install php-cli php-pgsql php-mbstring`) e do arquivo 
 3. Abra **http://localhost:8000** (dois cliques no html não funcionam: o navegador não chama a API assim).
 
 Outros comandos:
-- `php backend/verificar_banco.php` – confere se a conexão com o banco está certa
+- `php backend/verificar_banco.php` – confere a conexão com o banco e as regras dos gostos
 - `php backend/demo.php` – demonstração das classes no terminal (não precisa de banco)
 - `php testes/rodar.php` – roda os testes automáticos (não precisa de banco; veja "Testes" abaixo)
 
@@ -60,10 +61,14 @@ Outros comandos:
 - Na venda, o NPC paga em cima do que **você pagou**: ama = +50%, neutro = igual, odeia = −25%.
   Como no jogo, o site não mostra o gosto antes: você descobre vendendo (e o histórico do perfil lembra).
 - Todo jogador começa com 1000 g.
+- **Lojas (5):** Pierre (colheitas, coletáveis, conservas), Gus (comidas e bebidas), Willy (peixes e coisas da praia),
+  Clint (minerais, minérios e barras) e Marnie (produtos de animais, queijos, maionese e tecido). Lojista só vende.
+- **Moradores (29)** compram de você; cada um tem seus gostos (versão 4 do `GOSTOS.md`).
+  A loja tem **busca** (sem acento e sem maiúscula) e **filtro por categoria**.
 - **Ranking da vila**: quem mais lucrou vendendo (lucro = o que recebeu − o que pagou). Contas de teste
   (e-mail `@exemplo.com`) ficam de fora.
-- **Conquistas**: 8 medalhas (primeira compra, irídio, peixe de 45 cm, comprar nas 4 lojas, vender para os 6
-  moradores, 1.000 g de lucro...). Quando uma compra/venda libera uma, o pop-up da loja avisa.
+- **Conquistas**: 8 medalhas (primeira compra, irídio, peixe de 45 cm, comprar em todas as lojas, vender para todos os
+  moradores, 1.000 g de lucro...). As metas de lojas e moradores vêm do banco: crescem junto com a vila. Quando uma compra/venda libera uma, o pop-up da loja avisa.
 - **Diário de gostos**: na página da vila, o que você já descobriu sobre cada morador (só o que já vendeu).
 
 ## API (usada pelo `js/api.js`)

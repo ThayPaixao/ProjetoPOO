@@ -1,5 +1,7 @@
 -- seed.sql – dados do jogo (rode DEPOIS do schema.sql)
 -- Versão 3: todos os peixes, colheitas, comidas e minérios do Stardew Valley (preços da wiki oficial).
+-- Versão 4 (no fim do arquivo): coletáveis, produtos de animais, artesanato, minérios brutos e barras,
+-- a loja da Marnie e os 23 moradores que faltavam, com os gostos deles.
 -- Pode rodar de novo quando quiser: atualiza itens e gostos SEM apagar jogadores, compras e vendas.
 -- BRANCH "melhorias": grava só na CÓPIA do banco (schema "melhorias"); o original ("public") não é tocado.
 SET search_path TO melhorias;
@@ -723,6 +725,420 @@ FROM (VALUES
 ) AS f(id_npc, foto)
 WHERE npc.id_npc = f.id_npc;
 
--- Conferência: deve mostrar 254 itens, 535 gostos e 254 itens com foto.
+-- ===================== VERSÃO 4 (branch melhorias, 28/11/2026) =====================
+-- Itens que faltavam (coletáveis, produtos de animais, artesanato, minérios brutos e barras),
+-- a loja da Marnie, os 23 moradores que faltavam e os gostos deles. Detalhes no GOSTOS.md.
+
+INSERT INTO classificacao (id_classificacao, nome) VALUES
+  (5, 'Coletável'), (6, 'Produto Animal'), (7, 'Artesanato')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO npc (id_npc, nome, tipo) VALUES
+  ('marnie', 'Marnie', 'VENDEDOR'),
+  ('alex', 'Alex', 'CLIENTE'), ('caroline', 'Caroline', 'CLIENTE'), ('demetrius', 'Demetrius', 'CLIENTE'), ('anao', 'Anão', 'CLIENTE'),
+  ('emily', 'Emily', 'CLIENTE'), ('evelyn', 'Evelyn', 'CLIENTE'), ('george', 'George', 'CLIENTE'), ('haley', 'Haley', 'CLIENTE'),
+  ('jas', 'Jas', 'CLIENTE'), ('jodi', 'Jodi', 'CLIENTE'), ('kent', 'Kent', 'CLIENTE'), ('krobus', 'Krobus', 'CLIENTE'),
+  ('leo', 'Leo', 'CLIENTE'), ('lewis', 'Lewis', 'CLIENTE'), ('linus', 'Linus', 'CLIENTE'), ('maru', 'Maru', 'CLIENTE'),
+  ('pam', 'Pam', 'CLIENTE'), ('robin', 'Robin', 'CLIENTE'), ('sam', 'Sam', 'CLIENTE'), ('sandy', 'Sandy', 'CLIENTE'),
+  ('shane', 'Shane', 'CLIENTE'), ('vincent', 'Vincent', 'CLIENTE'), ('feiticeiro', 'Feiticeiro', 'CLIENTE')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO loja (id_loja, nome, id_npc) VALUES
+  (5, 'Rancho da Marnie', 'marnie')
+ON CONFLICT DO NOTHING;
+
+-- Itens novos: se o nome já existe, só atualiza (os ids continuam os mesmos)
+INSERT INTO item (nome, preco_base, id_classificacao, id_loja) VALUES
+  -- Coletável (pierre, 25)
+  ('Cogumelo Comum', 40, 5, 2),
+  ('Narciso', 30, 5, 2),
+  ('Dente-de-leão', 40, 5, 2),
+  ('Alho-poró', 60, 5, 2),
+  ('Morel', 150, 5, 2),
+  ('Amora-silvestre', 5, 5, 2),
+  ('Cebolinha', 8, 5, 2),
+  ('Raiz-forte', 50, 5, 2),
+  ('Broto de Samambaia', 90, 5, 2),
+  ('Cogumelo Vermelho', 75, 5, 2),
+  ('Café de Jardim', 80, 5, 2),
+  ('Amora', 20, 5, 2),
+  ('Cantarelo', 160, 5, 2),
+  ('Avelã', 90, 5, 2),
+  ('Ameixa Selvagem', 80, 5, 2),
+  ('Flor de Açafrão', 60, 5, 2),
+  ('Fruta de Cristal', 150, 5, 2),
+  ('Azevinho', 80, 5, 2),
+  ('Inhame da Neve', 100, 5, 2),
+  ('Raiz de Inverno', 70, 5, 2),
+  ('Cenoura Subterrânea', 25, 5, 2),
+  ('Cogumelo Roxo', 250, 5, 2),
+  ('Coco', 100, 5, 2),
+  ('Cogumelo de Magma', 400, 5, 2),
+  ('Gengibre', 60, 5, 2),
+  -- Coletável (willy, 5)
+  ('Algas Marinhas', 20, 5, 1),
+  ('Coral', 80, 5, 1),
+  ('Concha de Náutilo', 120, 5, 1),
+  ('Concha Arco-íris', 300, 5, 1),
+  ('Ouriço-do-mar', 160, 5, 1),
+  -- Produto Animal (marnie, 17)
+  ('Lã', 340, 6, 5),
+  ('Pé de Coelho', 565, 6, 5),
+  ('Ovo de Dinossauro', 350, 6, 5),
+  ('Ovo', 50, 6, 5),
+  ('Ovo Grande', 95, 6, 5),
+  ('Ovo Marrom', 50, 6, 5),
+  ('Ovo Grande Marrom', 95, 6, 5),
+  ('Ovo Dourado', 500, 6, 5),
+  ('Ovo Nulo', 65, 6, 5),
+  ('Ovo de Pata', 95, 6, 5),
+  ('Pena de Pato', 250, 6, 5),
+  ('Ovo de Avestruz', 600, 6, 5),
+  ('Leite de Cabra', 225, 6, 5),
+  ('Leite Grande de Cabra', 345, 6, 5),
+  ('Trufa', 625, 6, 5),
+  ('Leite', 125, 6, 5),
+  ('Leite Grande', 190, 6, 5),
+  -- Artesanato (marnie, 8)
+  ('Queijo', 230, 7, 5),
+  ('Queijo de Cabra', 400, 7, 5),
+  ('Maionese', 190, 7, 5),
+  ('Maionese de Dinossauro', 800, 7, 5),
+  ('Maionese de Ovo de Pata', 375, 7, 5),
+  ('Maionese Nula', 275, 7, 5),
+  ('Tecido', 470, 7, 5),
+  ('Óleo de Trufas', 1065, 7, 5),
+  -- Artesanato (gus, 7)
+  ('Café', 150, 7, 3),
+  ('Cerveja', 200, 7, 3),
+  ('Chá Verde', 100, 7, 3),
+  ('Hidromel', 300, 7, 3),
+  ('Pale Ale', 300, 7, 3),
+  ('Suco', 225, 7, 3),
+  ('Vinho', 300, 7, 3),
+  -- Artesanato (pierre, 11)
+  ('Mel', 100, 7, 2),
+  ('Geleia', 250, 7, 2),
+  ('Picles', 250, 7, 2),
+  ('Fruta Seca', 775, 7, 2),
+  ('Passas', 600, 7, 2),
+  ('Cogumelos Desidratados', 775, 7, 2),
+  ('Óleo', 100, 7, 2),
+  ('Alcatrão de Pinho', 100, 7, 2),
+  ('Resina de Carvalho', 150, 7, 2),
+  ('Xarope de Ácer', 200, 7, 2),
+  ('Xarope Místico', 1000, 7, 2),
+  -- Artesanato (willy, 3)
+  ('Peixe Defumado', 200, 7, 1),
+  ('Caviar', 500, 7, 1),
+  ('Ovas Maturadas', 160, 7, 1),
+  -- Minério (clint, 12)
+  ('Minério de Cobre', 5, 4, 4),
+  ('Minério de Ferro', 10, 4, 4),
+  ('Minério de Ouro', 25, 4, 4),
+  ('Minério de Irídio', 100, 4, 4),
+  ('Minério Radioativo', 300, 4, 4),
+  ('Barra de Cobre', 60, 4, 4),
+  ('Barra de Ferro', 120, 4, 4),
+  ('Barra de Ouro', 250, 4, 4),
+  ('Barra de Irídio', 1000, 4, 4),
+  ('Barra Radioativa', 3000, 4, 4),
+  ('Quartzo Refinado', 50, 4, 4),
+  ('Carvão', 15, 4, 4)
+ON CONFLICT (nome) DO UPDATE SET preco_base = EXCLUDED.preco_base,
+  id_classificacao = EXCLUDED.id_classificacao, id_loja = EXCLUDED.id_loja;
+
+-- Gostos da versão 4 (os da versão 3, acima, continuam iguais). Só 'Ama' (1) e 'Odeia' (3).
+INSERT INTO npc_sentimento (id_npc, id_item, id_sentimento)
+SELECT g.id_npc, i.id_item, g.id_sentimento
+FROM (VALUES
+  -- abigail: ama (1)
+  ('abigail', 'Pé de Coelho', 1),
+  -- abigail: odeia (9)
+  ('abigail', 'Algas Marinhas', 3), ('abigail', 'Azevinho', 3), ('abigail', 'Barra Radioativa', 3), ('abigail', 'Cogumelo Vermelho', 3),
+  ('abigail', 'Maionese Nula', 3), ('abigail', 'Minério Radioativo', 3), ('abigail', 'Minério de Cobre', 3), ('abigail', 'Minério de Ferro', 3),
+  ('abigail', 'Ouriço-do-mar', 3),
+  -- alex: ama (8)
+  ('alex', 'Broto de Samambaia', 1), ('alex', 'Café da Manhã Completo', 1), ('alex', 'Fragmento Prismático', 1), ('alex', 'Jantar de Salmão', 1),
+  ('alex', 'Ovo', 1), ('alex', 'Ovo Grande Marrom', 1), ('alex', 'Ovo de Dinossauro', 1), ('alex', 'Pé de Coelho', 1),
+  -- alex: odeia (15)
+  ('alex', 'Algas Marinhas', 3), ('alex', 'Azevinho', 3), ('alex', 'Barra Radioativa', 3), ('alex', 'Carpa', 3),
+  ('alex', 'Cogumelo Vermelho', 3), ('alex', 'Lesma', 3), ('alex', 'Maionese Nula', 3), ('alex', 'Minério Radioativo', 3),
+  ('alex', 'Minério de Cobre', 3), ('alex', 'Minério de Ferro', 3), ('alex', 'Ouriço-do-mar', 3), ('alex', 'Papoula', 3),
+  ('alex', 'Pudim de Espuma do Mar', 3), ('alex', 'Pão Estranho', 3), ('alex', 'Quartzo', 3),
+  -- anao: ama (14)
+  ('anao', 'Ametista', 1), ('anao', 'Cenoura Subterrânea', 1), ('anao', 'Esmeralda', 1), ('anao', 'Fragmento Prismático', 1),
+  ('anao', 'Jade', 1), ('anao', 'Minério de Cobre', 1), ('anao', 'Minério de Ferro', 1), ('anao', 'Minério de Irídio', 1),
+  ('anao', 'Minério de Ouro', 1), ('anao', 'Pedra de Limão', 1), ('anao', 'Pé de Coelho', 1), ('anao', 'Rubi', 1),
+  ('anao', 'Topázio', 1), ('anao', 'Água-marinha', 1),
+  -- anao: odeia (11)
+  ('anao', 'Algas Marinhas', 3), ('anao', 'Barra Radioativa', 3), ('anao', 'Carpa', 3), ('anao', 'Cogumelo Vermelho', 3),
+  ('anao', 'Lesma', 3), ('anao', 'Maionese Nula', 3), ('anao', 'Minério Radioativo', 3), ('anao', 'Ouriço-do-mar', 3),
+  ('anao', 'Papoula', 3), ('anao', 'Pudim de Espuma do Mar', 3), ('anao', 'Pão Estranho', 3),
+  -- caroline: ama (8)
+  ('caroline', 'Chá Verde', 1), ('caroline', 'Cogumelos Desidratados', 1), ('caroline', 'Curry Tropical', 1), ('caroline', 'Flor-Miçanga', 1),
+  ('caroline', 'Fragmento Prismático', 1), ('caroline', 'Pé de Coelho', 1), ('caroline', 'Suco', 1), ('caroline', 'Taco de Peixe', 1),
+  -- caroline: odeia (15)
+  ('caroline', 'Algas Marinhas', 3), ('caroline', 'Amora-silvestre', 3), ('caroline', 'Barra Radioativa', 3), ('caroline', 'Carpa', 3),
+  ('caroline', 'Cogumelo Vermelho', 3), ('caroline', 'Lesma', 3), ('caroline', 'Maionese Nula', 3), ('caroline', 'Minério Radioativo', 3),
+  ('caroline', 'Minério de Cobre', 3), ('caroline', 'Minério de Ferro', 3), ('caroline', 'Ouriço-do-mar', 3), ('caroline', 'Papoula', 3),
+  ('caroline', 'Pudim de Espuma do Mar', 3), ('caroline', 'Pão Estranho', 3), ('caroline', 'Quartzo', 3),
+  -- demetrius: ama (8)
+  ('demetrius', 'Ameixa Selvagem', 1), ('demetrius', 'Fragmento Prismático', 1), ('demetrius', 'Morango', 1), ('demetrius', 'Ovo Dourado', 1),
+  ('demetrius', 'Pudim de Arroz', 1), ('demetrius', 'Pé de Coelho', 1), ('demetrius', 'Sopa de Vagens', 1), ('demetrius', 'Sorvete', 1),
+  -- demetrius: odeia (14)
+  ('demetrius', 'Algas Marinhas', 3), ('demetrius', 'Azevinho', 3), ('demetrius', 'Barra Radioativa', 3), ('demetrius', 'Carpa', 3),
+  ('demetrius', 'Cogumelo Vermelho', 3), ('demetrius', 'Lesma', 3), ('demetrius', 'Maionese Nula', 3), ('demetrius', 'Minério Radioativo', 3),
+  ('demetrius', 'Minério de Cobre', 3), ('demetrius', 'Minério de Ferro', 3), ('demetrius', 'Ouriço-do-mar', 3), ('demetrius', 'Papoula', 3),
+  ('demetrius', 'Pudim de Espuma do Mar', 3), ('demetrius', 'Pão Estranho', 3),
+  -- elliott: ama (2)
+  ('elliott', 'Pena de Pato', 1), ('elliott', 'Pé de Coelho', 1),
+  -- elliott: odeia (8)
+  ('elliott', 'Algas Marinhas', 3), ('elliott', 'Amora-silvestre', 3), ('elliott', 'Barra Radioativa', 3), ('elliott', 'Cogumelo Vermelho', 3),
+  ('elliott', 'Maionese Nula', 3), ('elliott', 'Minério Radioativo', 3), ('elliott', 'Minério de Cobre', 3), ('elliott', 'Minério de Ferro', 3),
+  -- emily: ama (11)
+  ('emily', 'Ametista', 1), ('emily', 'Esmeralda', 1), ('emily', 'Fragmento Prismático', 1), ('emily', 'Hambúrguer de Sobrevivência', 1),
+  ('emily', 'Jade', 1), ('emily', 'Lã', 1), ('emily', 'Pé de Coelho', 1), ('emily', 'Rubi', 1),
+  ('emily', 'Tecido', 1), ('emily', 'Topázio', 1), ('emily', 'Água-marinha', 1),
+  -- emily: odeia (18)
+  ('emily', 'Algas Marinhas', 3), ('emily', 'Azevinho', 3), ('emily', 'Barra Radioativa', 3), ('emily', 'Carpa', 3),
+  ('emily', 'Cogumelo Vermelho', 3), ('emily', 'Hossomaki', 3), ('emily', 'Jantar de Salmão', 3), ('emily', 'Lesma', 3),
+  ('emily', 'Maionese Nula', 3), ('emily', 'Minério Radioativo', 3), ('emily', 'Minério de Cobre', 3), ('emily', 'Minério de Ferro', 3),
+  ('emily', 'Ouriço-do-mar', 3), ('emily', 'Papoula', 3), ('emily', 'Pudim de Espuma do Mar', 3), ('emily', 'Pão Estranho', 3),
+  ('emily', 'Sashimi', 3), ('emily', 'Taco de Peixe', 3),
+  -- evelyn: ama (10)
+  ('evelyn', 'Beterraba', 1), ('evelyn', 'Bolo de Chocolate', 1), ('evelyn', 'Coral', 1), ('evelyn', 'Diamante', 1),
+  ('evelyn', 'Fragmento Prismático', 1), ('evelyn', 'Passas', 1), ('evelyn', 'Pé de Coelho', 1), ('evelyn', 'Recheio', 1),
+  ('evelyn', 'Rosa-fada', 1), ('evelyn', 'Tulipa', 1),
+  -- evelyn: odeia (79)
+  ('evelyn', 'Acará-disco Azul', 3), ('evelyn', 'Achigã', 3), ('evelyn', 'Achigã-pequeno', 3), ('evelyn', 'Albacora', 3),
+  ('evelyn', 'Algas Marinhas', 3), ('evelyn', 'Alho', 3), ('evelyn', 'Alocine', 3), ('evelyn', 'Amora-silvestre', 3),
+  ('evelyn', 'Anchova', 3), ('evelyn', 'Areinha', 3), ('evelyn', 'Arenque', 3), ('evelyn', 'Arraia', 3),
+  ('evelyn', 'Atum', 3), ('evelyn', 'Azevinho', 3), ('evelyn', 'Bagre', 3), ('evelyn', 'Baiacu', 3),
+  ('evelyn', 'Barra Radioativa', 3), ('evelyn', 'Brema', 3), ('evelyn', 'Café de Jardim', 3), ('evelyn', 'Camarão', 3),
+  ('evelyn', 'Caramujo', 3), ('evelyn', 'Caranguejo', 3), ('evelyn', 'Carpa', 3), ('evelyn', 'Carpa Escorpiônica', 3),
+  ('evelyn', 'Carpa Mutante', 3), ('evelyn', 'Carpa da Meia-noite', 3), ('evelyn', 'Chione', 3), ('evelyn', 'Cogumelo Vermelho', 3),
+  ('evelyn', 'Dourado', 3), ('evelyn', 'Enguia', 3), ('evelyn', 'Enguia Frita', 3), ('evelyn', 'Enguia Picante', 3),
+  ('evelyn', 'Enguia de Lava', 3), ('evelyn', 'Esquálio', 3), ('evelyn', 'Esturjão', 3), ('evelyn', 'Gobi', 3),
+  ('evelyn', 'Halibute', 3), ('evelyn', 'Hossomaki', 3), ('evelyn', 'Lagosta', 3), ('evelyn', 'Lagostim', 3),
+  ('evelyn', 'Lenda', 3), ('evelyn', 'Lesma', 3), ('evelyn', 'Linguado', 3), ('evelyn', 'Lula', 3),
+  ('evelyn', 'Lula da Meia-noite', 3), ('evelyn', 'Lúcio', 3), ('evelyn', 'Madeirão', 3), ('evelyn', 'Maionese Nula', 3),
+  ('evelyn', 'Minério Radioativo', 3), ('evelyn', 'Minério de Cobre', 3), ('evelyn', 'Minério de Ferro', 3), ('evelyn', 'Papoula', 3),
+  ('evelyn', 'Pargo', 3), ('evelyn', 'Peixe Assustador', 3), ('evelyn', 'Peixe-bolha', 3), ('evelyn', 'Peixe-carmim', 3),
+  ('evelyn', 'Peixe-fantasma', 3), ('evelyn', 'Peixe-gato-cabeçudo', 3), ('evelyn', 'Peixe-gelo', 3), ('evelyn', 'Peixe-leão', 3),
+  ('evelyn', 'Peixe-pedra', 3), ('evelyn', 'Peixe-sol', 3), ('evelyn', 'Pepino-do-mar', 3), ('evelyn', 'Perca', 3),
+  ('evelyn', 'Picão-verde', 3), ('evelyn', 'Polvo', 3), ('evelyn', 'Pudim de Espuma do Mar', 3), ('evelyn', 'Pão Estranho', 3),
+  ('evelyn', 'Salmonete', 3), ('evelyn', 'Salmão', 3), ('evelyn', 'Salmão Mutante', 3), ('evelyn', 'Sardinha', 3),
+  ('evelyn', 'Sashimi', 3), ('evelyn', 'Sopa de Truta', 3), ('evelyn', 'Superpepino', 3), ('evelyn', 'Tamboril', 3),
+  ('evelyn', 'Tilápia', 3), ('evelyn', 'Truta Arco-Íris', 3), ('evelyn', 'Ófis', 3),
+  -- feiticeiro: ama (8)
+  ('feiticeiro', 'Cogumelo Roxo', 1), ('feiticeiro', 'Cogumelo Vermelho', 1), ('feiticeiro', 'Fragmento Prismático', 1), ('feiticeiro', 'Geleia', 1),
+  ('feiticeiro', 'Maionese', 1), ('feiticeiro', 'Pé de Coelho', 1), ('feiticeiro', 'Superpepino', 1), ('feiticeiro', 'Xarope Místico', 1),
+  -- feiticeiro: odeia (12)
+  ('feiticeiro', 'Algas Marinhas', 3), ('feiticeiro', 'Barra Radioativa', 3), ('feiticeiro', 'Carpa', 3), ('feiticeiro', 'Lesma', 3),
+  ('feiticeiro', 'Maionese Nula', 3), ('feiticeiro', 'Minério Radioativo', 3), ('feiticeiro', 'Minério de Cobre', 3), ('feiticeiro', 'Minério de Ferro', 3),
+  ('feiticeiro', 'Ouriço-do-mar', 3), ('feiticeiro', 'Papoula', 3), ('feiticeiro', 'Pudim de Espuma do Mar', 3), ('feiticeiro', 'Pão Estranho', 3),
+  -- george: ama (8)
+  ('george', 'Alho-poró', 1), ('george', 'Cogumelo Frito', 1), ('george', 'Fragmento Prismático', 1), ('george', 'Maionese de Dinossauro', 1),
+  ('george', 'Peixe Defumado', 1), ('george', 'Picles', 1), ('george', 'Pé de Coelho', 1), ('george', 'Queijo', 1),
+  -- george: odeia (16)
+  ('george', 'Algas Marinhas', 3), ('george', 'Azevinho', 3), ('george', 'Barra Radioativa', 3), ('george', 'Carpa', 3),
+  ('george', 'Cogumelo Vermelho', 3), ('george', 'Dente-de-leão', 3), ('george', 'Lesma', 3), ('george', 'Maionese Nula', 3),
+  ('george', 'Minério Radioativo', 3), ('george', 'Minério de Cobre', 3), ('george', 'Minério de Ferro', 3), ('george', 'Ouriço-do-mar', 3),
+  ('george', 'Papoula', 3), ('george', 'Pudim de Espuma do Mar', 3), ('george', 'Pão Estranho', 3), ('george', 'Quartzo', 3),
+  -- haley: ama (8)
+  ('haley', 'Bolo Rosa', 1), ('haley', 'Caviar', 1), ('haley', 'Coco', 1), ('haley', 'Fruta Seca', 1),
+  ('haley', 'Girassol', 1), ('haley', 'Maionese de Ovo de Pata', 1), ('haley', 'Pé de Coelho', 1), ('haley', 'Salada de Frutas', 1),
+  -- haley: odeia (77)
+  ('haley', 'Acará-disco Azul', 3), ('haley', 'Achigã', 3), ('haley', 'Achigã-pequeno', 3), ('haley', 'Albacora', 3),
+  ('haley', 'Algas Marinhas', 3), ('haley', 'Alocine', 3), ('haley', 'Anchova', 3), ('haley', 'Areinha', 3),
+  ('haley', 'Arenque', 3), ('haley', 'Arraia', 3), ('haley', 'Atum', 3), ('haley', 'Bagre', 3),
+  ('haley', 'Baiacu', 3), ('haley', 'Barra Radioativa', 3), ('haley', 'Berbigão', 3), ('haley', 'Brema', 3),
+  ('haley', 'Camarão', 3), ('haley', 'Caramujo', 3), ('haley', 'Caranguejo', 3), ('haley', 'Carpa', 3),
+  ('haley', 'Carpa Escorpiônica', 3), ('haley', 'Carpa Mutante', 3), ('haley', 'Carpa da Meia-noite', 3), ('haley', 'Chione', 3),
+  ('haley', 'Cogumelo Vermelho', 3), ('haley', 'Concha', 3), ('haley', 'Dourado', 3), ('haley', 'Enguia', 3),
+  ('haley', 'Enguia de Lava', 3), ('haley', 'Esquálio', 3), ('haley', 'Esturjão', 3), ('haley', 'Fragmento Prismático', 3),
+  ('haley', 'Gobi', 3), ('haley', 'Halibute', 3), ('haley', 'Lagosta', 3), ('haley', 'Lagostim', 3),
+  ('haley', 'Lenda', 3), ('haley', 'Lesma', 3), ('haley', 'Linguado', 3), ('haley', 'Lula', 3),
+  ('haley', 'Lula da Meia-noite', 3), ('haley', 'Lúcio', 3), ('haley', 'Madeirão', 3), ('haley', 'Maionese Nula', 3),
+  ('haley', 'Mexilhão', 3), ('haley', 'Minério Radioativo', 3), ('haley', 'Minério de Cobre', 3), ('haley', 'Minério de Ferro', 3),
+  ('haley', 'Ostra', 3), ('haley', 'Ouriço-do-mar', 3), ('haley', 'Papoula', 3), ('haley', 'Pargo', 3),
+  ('haley', 'Peixe Assustador', 3), ('haley', 'Peixe-bolha', 3), ('haley', 'Peixe-carmim', 3), ('haley', 'Peixe-fantasma', 3),
+  ('haley', 'Peixe-gato-cabeçudo', 3), ('haley', 'Peixe-gelo', 3), ('haley', 'Peixe-leão', 3), ('haley', 'Peixe-pedra', 3),
+  ('haley', 'Peixe-sol', 3), ('haley', 'Pepino-do-mar', 3), ('haley', 'Perca', 3), ('haley', 'Picão-verde', 3),
+  ('haley', 'Polvo', 3), ('haley', 'Pudim de Espuma do Mar', 3), ('haley', 'Pão Estranho', 3), ('haley', 'Raiz-forte', 3),
+  ('haley', 'Salmonete', 3), ('haley', 'Salmão', 3), ('haley', 'Salmão Mutante', 3), ('haley', 'Sardinha', 3),
+  ('haley', 'Superpepino', 3), ('haley', 'Tamboril', 3), ('haley', 'Tilápia', 3), ('haley', 'Truta Arco-Íris', 3),
+  ('haley', 'Ófis', 3),
+  -- harvey: ama (4)
+  ('harvey', 'Café', 1), ('harvey', 'Pé de Coelho', 1), ('harvey', 'Vinho', 1), ('harvey', 'Óleo de Trufas', 1),
+  -- harvey: odeia (13)
+  ('harvey', 'Algas Marinhas', 3), ('harvey', 'Amora-silvestre', 3), ('harvey', 'Barra Radioativa', 3), ('harvey', 'Café de Jardim', 3),
+  ('harvey', 'Cogumelo Vermelho', 3), ('harvey', 'Concha Arco-íris', 3), ('harvey', 'Concha de Náutilo', 3), ('harvey', 'Coral', 3),
+  ('harvey', 'Maionese Nula', 3), ('harvey', 'Minério Radioativo', 3), ('harvey', 'Minério de Cobre', 3), ('harvey', 'Minério de Ferro', 3),
+  ('harvey', 'Ouriço-do-mar', 3),
+  -- jas: ama (7)
+  ('jas', 'Bolo Rosa', 1), ('jas', 'Fragmento Prismático', 1), ('jas', 'Mel', 1), ('jas', 'Pudim de Ameixa', 1),
+  ('jas', 'Pé de Coelho', 1), ('jas', 'Rosa-fada', 1), ('jas', 'Xarope de Ácer', 1),
+  -- jas: odeia (35)
+  ('jas', 'Algas Marinhas', 3), ('jas', 'Barra Radioativa', 3), ('jas', 'Café', 3), ('jas', 'Café Expresso Triplo', 3),
+  ('jas', 'Carpa', 3), ('jas', 'Caviar', 3), ('jas', 'Cerveja', 3), ('jas', 'Chá Verde', 3),
+  ('jas', 'Cogumelo Vermelho', 3), ('jas', 'Cogumelos Desidratados', 3), ('jas', 'Fruta Seca', 3), ('jas', 'Hidromel', 3),
+  ('jas', 'Lesma', 3), ('jas', 'Maionese', 3), ('jas', 'Maionese Nula', 3), ('jas', 'Maionese de Dinossauro', 3),
+  ('jas', 'Maionese de Ovo de Pata', 3), ('jas', 'Minério Radioativo', 3), ('jas', 'Minério de Cobre', 3), ('jas', 'Minério de Ferro', 3),
+  ('jas', 'Ouriço-do-mar', 3), ('jas', 'Ovas Maturadas', 3), ('jas', 'Pale Ale', 3), ('jas', 'Papoula', 3),
+  ('jas', 'Passas', 3), ('jas', 'Peixe Defumado', 3), ('jas', 'Pudim de Espuma do Mar', 3), ('jas', 'Pão Estranho', 3),
+  ('jas', 'Queijo', 3), ('jas', 'Queijo de Cabra', 3), ('jas', 'Raiz-forte', 3), ('jas', 'Suco', 3),
+  ('jas', 'Tecido', 3), ('jas', 'Vinho', 3), ('jas', 'Óleo de Trufas', 3),
+  -- jodi: ama (11)
+  ('jodi', 'Achigã Crocante', 1), ('jodi', 'Berinjela à Parmegiana', 1), ('jodi', 'Bolo de Chocolate', 1), ('jodi', 'Diamante', 1),
+  ('jodi', 'Enguia Frita', 1), ('jodi', 'Fragmento Prismático', 1), ('jodi', 'Mexido de Legumes', 1), ('jodi', 'Panquecas', 1),
+  ('jodi', 'Pé de Coelho', 1), ('jodi', 'Torta de Ruibarbo', 1), ('jodi', 'Óleo', 1),
+  -- jodi: odeia (16)
+  ('jodi', 'Algas Marinhas', 3), ('jodi', 'Barra Radioativa', 3), ('jodi', 'Café de Jardim', 3), ('jodi', 'Carpa', 3),
+  ('jodi', 'Cogumelo Vermelho', 3), ('jodi', 'Dente-de-leão', 3), ('jodi', 'Lesma', 3), ('jodi', 'Maionese Nula', 3),
+  ('jodi', 'Minério Radioativo', 3), ('jodi', 'Minério de Cobre', 3), ('jodi', 'Minério de Ferro', 3), ('jodi', 'Narciso', 3),
+  ('jodi', 'Ouriço-do-mar', 3), ('jodi', 'Papoula', 3), ('jodi', 'Pudim de Espuma do Mar', 3), ('jodi', 'Pão Estranho', 3),
+  -- kent: ama (8)
+  ('kent', 'Amora-silvestre', 1), ('kent', 'Avelãs Torradas', 1), ('kent', 'Café de Jardim', 1), ('kent', 'Fragmento Prismático', 1),
+  ('kent', 'Fruta de Cristal', 1), ('kent', 'Ovo de Pata', 1), ('kent', 'Pé de Coelho', 1), ('kent', 'Risoto de Samambaia', 1),
+  -- kent: odeia (21)
+  ('kent', 'Algas Marinhas', 3), ('kent', 'Azevinho', 3), ('kent', 'Barra Radioativa', 3), ('kent', 'Carpa', 3),
+  ('kent', 'Cogumelo Vermelho', 3), ('kent', 'Leite', 3), ('kent', 'Leite Grande', 3), ('kent', 'Leite Grande de Cabra', 3),
+  ('kent', 'Leite de Cabra', 3), ('kent', 'Lesma', 3), ('kent', 'Maionese Nula', 3), ('kent', 'Minério Radioativo', 3),
+  ('kent', 'Minério de Cobre', 3), ('kent', 'Minério de Ferro', 3), ('kent', 'Ouriço-do-mar', 3), ('kent', 'Papoula', 3),
+  ('kent', 'Pudim de Espuma do Mar', 3), ('kent', 'Pão Estranho', 3), ('kent', 'Sashimi', 3), ('kent', 'Sopa de Alga', 3),
+  ('kent', 'Tortilha', 3),
+  -- krobus: ama (8)
+  ('krobus', 'Abóbora', 1), ('krobus', 'Barra de Irídio', 1), ('krobus', 'Diamante', 1), ('krobus', 'Fragmento Prismático', 1),
+  ('krobus', 'Maionese Nula', 1), ('krobus', 'Ovo Nulo', 1), ('krobus', 'Pé de Coelho', 1), ('krobus', 'Raiz-forte', 1),
+  -- krobus: odeia (10)
+  ('krobus', 'Algas Marinhas', 3), ('krobus', 'Barra Radioativa', 3), ('krobus', 'Carpa', 3), ('krobus', 'Cogumelo Vermelho', 3),
+  ('krobus', 'Lesma', 3), ('krobus', 'Minério Radioativo', 3), ('krobus', 'Minério de Cobre', 3), ('krobus', 'Minério de Ferro', 3),
+  ('krobus', 'Ouriço-do-mar', 3), ('krobus', 'Papoula', 3),
+  -- leah: ama (5)
+  ('leah', 'Algas Marinhas', 1), ('leah', 'Pé de Coelho', 1), ('leah', 'Queijo de Cabra', 1), ('leah', 'Trufa', 1),
+  ('leah', 'Vinho', 1),
+  -- leah: odeia (8)
+  ('leah', 'Barra Radioativa', 3), ('leah', 'Cogumelo Vermelho', 3), ('leah', 'Maionese Nula', 3), ('leah', 'Minério Radioativo', 3),
+  ('leah', 'Minério de Cobre', 3), ('leah', 'Minério de Ferro', 3), ('leah', 'Ouriço-do-mar', 3), ('leah', 'Ovo Nulo', 3),
+  -- leo: ama (9)
+  ('leo', 'Concha Arco-íris', 1), ('leo', 'Concha de Náutilo', 1), ('leo', 'Fragmento Prismático', 1), ('leo', 'Manga', 1),
+  ('leo', 'Ouriço-do-mar', 1), ('leo', 'Ovo de Avestruz', 1), ('leo', 'Pena de Pato', 1), ('leo', 'Poi', 1),
+  ('leo', 'Pé de Coelho', 1),
+  -- leo: odeia (16)
+  ('leo', 'Algas Marinhas', 3), ('leo', 'Arroz não Moído', 3), ('leo', 'Azevinho', 3), ('leo', 'Barra Radioativa', 3),
+  ('leo', 'Café Expresso Triplo', 3), ('leo', 'Cerveja', 3), ('leo', 'Hidromel', 3), ('leo', 'Lúpulo', 3),
+  ('leo', 'Minério Radioativo', 3), ('leo', 'Minério de Cobre', 3), ('leo', 'Minério de Ferro', 3), ('leo', 'Morel', 3),
+  ('leo', 'Pale Ale', 3), ('leo', 'Pão Estranho', 3), ('leo', 'Vinho', 3), ('leo', 'Óleo', 3),
+  -- lewis: ama (8)
+  ('lewis', 'Chá Verde', 1), ('lewis', 'Fragmento Prismático', 1), ('lewis', 'Inhames com Cobertura', 1), ('lewis', 'Mexido de Legumes', 1),
+  ('lewis', 'Ovas Maturadas', 1), ('lewis', 'Pimenta Picante', 1), ('lewis', 'Prato de Outono', 1), ('lewis', 'Pé de Coelho', 1),
+  -- lewis: odeia (15)
+  ('lewis', 'Algas Marinhas', 3), ('lewis', 'Azevinho', 3), ('lewis', 'Barra Radioativa', 3), ('lewis', 'Carpa', 3),
+  ('lewis', 'Cogumelo Vermelho', 3), ('lewis', 'Lesma', 3), ('lewis', 'Maionese Nula', 3), ('lewis', 'Minério Radioativo', 3),
+  ('lewis', 'Minério de Cobre', 3), ('lewis', 'Minério de Ferro', 3), ('lewis', 'Ouriço-do-mar', 3), ('lewis', 'Papoula', 3),
+  ('lewis', 'Pudim de Espuma do Mar', 3), ('lewis', 'Pão Estranho', 3), ('lewis', 'Quartzo', 3),
+  -- linus: ama (18)
+  ('linus', 'Avelã', 1), ('linus', 'Azevinho', 1), ('linus', 'Cantarelo', 1), ('linus', 'Carvão', 1),
+  ('linus', 'Cebolinha', 1), ('linus', 'Coco', 1), ('linus', 'Cogumelo Comum', 1), ('linus', 'Dente-de-leão', 1),
+  ('linus', 'Fragmento Prismático', 1), ('linus', 'Fruto do Cacto', 1), ('linus', 'Gengibre', 1), ('linus', 'Inhame', 1),
+  ('linus', 'Inhame da Neve', 1), ('linus', 'Morel', 1), ('linus', 'Prato do Mar', 1), ('linus', 'Pé de Coelho', 1),
+  ('linus', 'Raiz de Inverno', 1), ('linus', 'Torta de Mirtilo', 1),
+  -- linus: odeia (13)
+  ('linus', 'Algas Marinhas', 3), ('linus', 'Barra Radioativa', 3), ('linus', 'Carpa', 3), ('linus', 'Cogumelo Vermelho', 3),
+  ('linus', 'Lesma', 3), ('linus', 'Maionese Nula', 3), ('linus', 'Minério Radioativo', 3), ('linus', 'Minério de Cobre', 3),
+  ('linus', 'Minério de Ferro', 3), ('linus', 'Ouriço-do-mar', 3), ('linus', 'Papoula', 3), ('linus', 'Pudim de Espuma do Mar', 3),
+  ('linus', 'Pão Estranho', 3),
+  -- maru: ama (19)
+  ('maru', 'Alcatrão de Pinho', 1), ('maru', 'Barra Radioativa', 1), ('maru', 'Barra de Cobre', 1), ('maru', 'Barra de Ferro', 1),
+  ('maru', 'Barra de Irídio', 1), ('maru', 'Barra de Ouro', 1), ('maru', 'Cogumelo de Magma', 1), ('maru', 'Couve-flor', 1),
+  ('maru', 'Couve-flor com Queijo', 1), ('maru', 'Diamante', 1), ('maru', 'Enroladinhos de Pimenta', 1), ('maru', 'Fragmento Prismático', 1),
+  ('maru', 'Minério Radioativo', 1), ('maru', 'Morango', 1), ('maru', 'Pé de Coelho', 1), ('maru', 'Quartzo Refinado', 1),
+  ('maru', 'Refeição de Mineiro', 1), ('maru', 'Resina de Carvalho', 1), ('maru', 'Torta de Ruibarbo', 1),
+  -- maru: odeia (15)
+  ('maru', 'Algas Marinhas', 3), ('maru', 'Azevinho', 3), ('maru', 'Carpa', 3), ('maru', 'Cogumelo Vermelho', 3),
+  ('maru', 'Inhame da Neve', 3), ('maru', 'Lesma', 3), ('maru', 'Maionese Nula', 3), ('maru', 'Mel', 3),
+  ('maru', 'Minério de Cobre', 3), ('maru', 'Minério de Ferro', 3), ('maru', 'Ouriço-do-mar', 3), ('maru', 'Papoula', 3),
+  ('maru', 'Pudim de Espuma do Mar', 3), ('maru', 'Pão Estranho', 3), ('maru', 'Trufa', 3),
+  -- pam: ama (9)
+  ('pam', 'Cerveja', 1), ('pam', 'Chirívia', 1), ('pam', 'Fragmento Prismático', 1), ('pam', 'Fruto do Cacto', 1),
+  ('pam', 'Hidromel', 1), ('pam', 'Inhames com Cobertura', 1), ('pam', 'Pale Ale', 1), ('pam', 'Pé de Coelho', 1),
+  ('pam', 'Sopa de Chirívia', 1),
+  -- pam: odeia (16)
+  ('pam', 'Algas Marinhas', 3), ('pam', 'Azevinho', 3), ('pam', 'Barra Radioativa', 3), ('pam', 'Carpa', 3),
+  ('pam', 'Cogumelo Vermelho', 3), ('pam', 'Lesma', 3), ('pam', 'Lula', 3), ('pam', 'Maionese Nula', 3),
+  ('pam', 'Minério Radioativo', 3), ('pam', 'Minério de Cobre', 3), ('pam', 'Minério de Ferro', 3), ('pam', 'Ouriço-do-mar', 3),
+  ('pam', 'Papoula', 3), ('pam', 'Polvo', 3), ('pam', 'Pudim de Espuma do Mar', 3), ('pam', 'Pão Estranho', 3),
+  -- penny: odeia (13)
+  ('penny', 'Algas Marinhas', 3), ('penny', 'Azevinho', 3), ('penny', 'Barra Radioativa', 3), ('penny', 'Cerveja', 3),
+  ('penny', 'Hidromel', 3), ('penny', 'Maionese Nula', 3), ('penny', 'Minério Radioativo', 3), ('penny', 'Minério de Cobre', 3),
+  ('penny', 'Minério de Ferro', 3), ('penny', 'Ouriço-do-mar', 3), ('penny', 'Pale Ale', 3), ('penny', 'Pé de Coelho', 3),
+  ('penny', 'Vinho', 3),
+  -- robin: ama (9)
+  ('robin', 'Amora', 1), ('robin', 'Espaguete', 1), ('robin', 'Fragmento Prismático', 1), ('robin', 'Leite', 1),
+  ('robin', 'Leite Grande', 1), ('robin', 'Leite de Cabra', 1), ('robin', 'Pé de Coelho', 1), ('robin', 'Pêssego', 1),
+  ('robin', 'Queijo de Cabra', 1),
+  -- robin: odeia (14)
+  ('robin', 'Algas Marinhas', 3), ('robin', 'Azevinho', 3), ('robin', 'Barra Radioativa', 3), ('robin', 'Carpa', 3),
+  ('robin', 'Cogumelo Vermelho', 3), ('robin', 'Lesma', 3), ('robin', 'Maionese Nula', 3), ('robin', 'Minério Radioativo', 3),
+  ('robin', 'Minério de Cobre', 3), ('robin', 'Minério de Ferro', 3), ('robin', 'Ouriço-do-mar', 3), ('robin', 'Papoula', 3),
+  ('robin', 'Pudim de Espuma do Mar', 3), ('robin', 'Pão Estranho', 3),
+  -- sam: ama (7)
+  ('sam', 'Fragmento Prismático', 1), ('sam', 'Fruto do Cacto', 1), ('sam', 'Olho de Tigre', 1), ('sam', 'Ovo Grande', 1),
+  ('sam', 'Pizza', 1), ('sam', 'Pão de Ácer', 1), ('sam', 'Pé de Coelho', 1),
+  -- sam: odeia (22)
+  ('sam', 'Barra Radioativa', 3), ('sam', 'Barra de Cobre', 3), ('sam', 'Barra de Ferro', 3), ('sam', 'Barra de Irídio', 3),
+  ('sam', 'Barra de Ouro', 3), ('sam', 'Carpa', 3), ('sam', 'Carvão', 3), ('sam', 'Cogumelo Vermelho', 3),
+  ('sam', 'Lesma', 3), ('sam', 'Maionese', 3), ('sam', 'Maionese Nula', 3), ('sam', 'Maionese de Ovo de Pata', 3),
+  ('sam', 'Minério Radioativo', 3), ('sam', 'Minério de Cobre', 3), ('sam', 'Minério de Ferro', 3), ('sam', 'Minério de Irídio', 3),
+  ('sam', 'Minério de Ouro', 3), ('sam', 'Ouriço-do-mar', 3), ('sam', 'Papoula', 3), ('sam', 'Pudim de Espuma do Mar', 3),
+  ('sam', 'Pão Estranho', 3), ('sam', 'Quartzo Refinado', 3),
+  -- sandy: ama (7)
+  ('sandy', 'Arroz Doce de Manga', 1), ('sandy', 'Ervilha-de-cheiro', 1), ('sandy', 'Flor de Açafrão', 1), ('sandy', 'Fragmento Prismático', 1),
+  ('sandy', 'Leite Grande de Cabra', 1), ('sandy', 'Narciso', 1), ('sandy', 'Pé de Coelho', 1),
+  -- sandy: odeia (14)
+  ('sandy', 'Algas Marinhas', 3), ('sandy', 'Azevinho', 3), ('sandy', 'Barra Radioativa', 3), ('sandy', 'Carpa', 3),
+  ('sandy', 'Cogumelo Vermelho', 3), ('sandy', 'Lesma', 3), ('sandy', 'Maionese Nula', 3), ('sandy', 'Minério Radioativo', 3),
+  ('sandy', 'Minério de Cobre', 3), ('sandy', 'Minério de Ferro', 3), ('sandy', 'Ouriço-do-mar', 3), ('sandy', 'Papoula', 3),
+  ('sandy', 'Pudim de Espuma do Mar', 3), ('sandy', 'Pão Estranho', 3),
+  -- sebastian: ama (2)
+  ('sebastian', 'Ovo Nulo', 1), ('sebastian', 'Pé de Coelho', 1),
+  -- sebastian: odeia (36)
+  ('sebastian', 'Algas Marinhas', 3), ('sebastian', 'Barra Radioativa', 3), ('sebastian', 'Caviar', 3), ('sebastian', 'Cerveja', 3),
+  ('sebastian', 'Cogumelo Vermelho', 3), ('sebastian', 'Cogumelos Desidratados', 3), ('sebastian', 'Fruta Seca', 3), ('sebastian', 'Geleia', 3),
+  ('sebastian', 'Hidromel', 3), ('sebastian', 'Maionese', 3), ('sebastian', 'Maionese Nula', 3), ('sebastian', 'Maionese de Dinossauro', 3),
+  ('sebastian', 'Maionese de Ovo de Pata', 3), ('sebastian', 'Mel', 3), ('sebastian', 'Minério Radioativo', 3), ('sebastian', 'Minério de Cobre', 3),
+  ('sebastian', 'Minério de Ferro', 3), ('sebastian', 'Ouriço-do-mar', 3), ('sebastian', 'Ovas Maturadas', 3), ('sebastian', 'Ovo', 3),
+  ('sebastian', 'Ovo Dourado', 3), ('sebastian', 'Ovo Grande', 3), ('sebastian', 'Ovo Grande Marrom', 3), ('sebastian', 'Ovo Marrom', 3),
+  ('sebastian', 'Ovo de Avestruz', 3), ('sebastian', 'Ovo de Pata', 3), ('sebastian', 'Pale Ale', 3), ('sebastian', 'Passas', 3),
+  ('sebastian', 'Peixe Defumado', 3), ('sebastian', 'Picles', 3), ('sebastian', 'Queijo', 3), ('sebastian', 'Queijo de Cabra', 3),
+  ('sebastian', 'Suco', 3), ('sebastian', 'Tecido', 3), ('sebastian', 'Vinho', 3), ('sebastian', 'Óleo de Trufas', 3),
+  -- shane: ama (7)
+  ('shane', 'Cerveja', 1), ('shane', 'Enroladinhos de Pimenta', 1), ('shane', 'Fragmento Prismático', 1), ('shane', 'Ovo Marrom', 1),
+  ('shane', 'Pimenta Picante', 1), ('shane', 'Pizza', 1), ('shane', 'Pé de Coelho', 1),
+  -- shane: odeia (12)
+  ('shane', 'Barra Radioativa', 3), ('shane', 'Carpa', 3), ('shane', 'Cogumelo Vermelho', 3), ('shane', 'Lesma', 3),
+  ('shane', 'Maionese Nula', 3), ('shane', 'Minério Radioativo', 3), ('shane', 'Minério de Cobre', 3), ('shane', 'Minério de Ferro', 3),
+  ('shane', 'Ouriço-do-mar', 3), ('shane', 'Papoula', 3), ('shane', 'Pudim de Espuma do Mar', 3), ('shane', 'Quartzo', 3),
+  -- vincent: ama (7)
+  ('vincent', 'Bolo Rosa', 1), ('vincent', 'Doce de Oxicoco', 1), ('vincent', 'Fragmento Prismático', 1), ('vincent', 'Ginger Ale', 1),
+  ('vincent', 'Lesma', 1), ('vincent', 'Pé de Coelho', 1), ('vincent', 'Uva', 1),
+  -- vincent: odeia (34)
+  ('vincent', 'Algas Marinhas', 3), ('vincent', 'Barra Radioativa', 3), ('vincent', 'Café', 3), ('vincent', 'Café Expresso Triplo', 3),
+  ('vincent', 'Carpa', 3), ('vincent', 'Caviar', 3), ('vincent', 'Cerveja', 3), ('vincent', 'Chá Verde', 3),
+  ('vincent', 'Cogumelo Vermelho', 3), ('vincent', 'Cogumelos Desidratados', 3), ('vincent', 'Fruta Seca', 3), ('vincent', 'Hidromel', 3),
+  ('vincent', 'Maionese', 3), ('vincent', 'Maionese Nula', 3), ('vincent', 'Maionese de Dinossauro', 3), ('vincent', 'Maionese de Ovo de Pata', 3),
+  ('vincent', 'Minério Radioativo', 3), ('vincent', 'Minério de Cobre', 3), ('vincent', 'Minério de Ferro', 3), ('vincent', 'Ouriço-do-mar', 3),
+  ('vincent', 'Ovas Maturadas', 3), ('vincent', 'Pale Ale', 3), ('vincent', 'Papoula', 3), ('vincent', 'Passas', 3),
+  ('vincent', 'Peixe Defumado', 3), ('vincent', 'Pudim de Espuma do Mar', 3), ('vincent', 'Pão Estranho', 3), ('vincent', 'Queijo', 3),
+  ('vincent', 'Queijo de Cabra', 3), ('vincent', 'Raiz-forte', 3), ('vincent', 'Suco', 3), ('vincent', 'Tecido', 3),
+  ('vincent', 'Vinho', 3), ('vincent', 'Óleo de Trufas', 3)
+) AS g(id_npc, nome_item, id_sentimento)
+JOIN item i ON i.nome = g.nome_item
+ON CONFLICT (id_npc, id_item) DO UPDATE SET id_sentimento = EXCLUDED.id_sentimento;
+
+-- Conferência: deve mostrar 342 itens, 1363 gostos e 254 itens com foto
+-- (os 88 itens novos da versão 4 ainda usam a imagem padrão).
 SELECT (SELECT count(*) FROM item) AS itens, (SELECT count(*) FROM npc_sentimento) AS gostos,
        (SELECT count(*) FROM item WHERE foto IS NOT NULL) AS itens_com_foto;

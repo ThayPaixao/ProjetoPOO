@@ -43,6 +43,7 @@ class Vendedor extends NPC
         'gus' => 'Saindo quentinho da cozinha do Saloon! Bom apetite.',
         'willy' => 'Fisgado hoje cedinho! Cuide bem dele, viu?',
         'clint' => 'Hã... aqui está. Brilha bonito, né?',
+        'marnie' => 'Fresquinho do rancho! Os bichos mandaram lembranças.',
     ];
 
     public function fala(): string
