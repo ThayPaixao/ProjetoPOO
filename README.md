@@ -11,8 +11,7 @@ vila.html       ranking da vila, conquistas e diário de gostos
 css/            base, components, auth, menu, home, itens, perfil, lojas, popup, vila...
 js/             menu, auth, api (fala com o back-end), render (templates), perfil, lojas, vila,
                 autosave + autosave-worker (thread)
-assets/img/     itens/ (254 imagens) e npcs/ (10 retratos) do jogo + placeholders (os 88 itens e 24 NPCs
-                da versão 4 ainda usam a imagem padrão)
+assets/img/     itens/ (342 imagens) e npcs/ (34 retratos) do jogo + placeholders
 
 api/index.php   API: recebe as chamadas do js/api.js e devolve JSON
 backend/        classes PHP (POO)
