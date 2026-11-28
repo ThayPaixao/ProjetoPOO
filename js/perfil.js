@@ -72,6 +72,7 @@ function mostrarSave(save) {
     mostrarSave(await API.carregarSave());
     Render.lista(document.getElementById('inventario-lista'), inventario, 'tpl-item-card',
       { vazio: 'Seu inventário está vazio.' });
+    document.getElementById('btn-vender').hidden = inventario.length === 0;   // sem itens, não tem o que vender
     Render.lista(document.getElementById('historico-lista'),
       historico.map(venda => ({ ...venda, npc: `para ${venda.npc}` })), 'tpl-historico-item',
       { vazio: 'Você ainda não vendeu nada.' });

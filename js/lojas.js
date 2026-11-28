@@ -94,6 +94,7 @@
   abas.forEach(aba => aba.addEventListener('click', async () => {
     estado.modo = aba.dataset.modo;
     abas.forEach(a => a.setAttribute('aria-selected', String(a === aba)));
+    history.replaceState(null, '', estado.modo === 'vender' ? '?modo=vender' : location.pathname);   // F5 continua na mesma aba
     aviso.textContent = '';
     try {
       await carregarNpcs();
@@ -201,6 +202,13 @@
     if (modo === 'vender' && estado.modo === 'vender' && estado.npc === npc) desenhar();   // o item vendido sai da lista
     else botao.disabled = false;
   });
+
+  /* lojas.html?modo=vender abre direto na aba Vender (é o que o botão "vender" do perfil usa) */
+  const modoPedido = new URLSearchParams(location.search).get('modo');
+  if (modoPedido === 'comprar' || modoPedido === 'vender') {
+    estado.modo = modoPedido;
+    abas.forEach(a => a.setAttribute('aria-selected', String(a.dataset.modo === modoPedido)));
+  }
 
   (async () => {
     try {

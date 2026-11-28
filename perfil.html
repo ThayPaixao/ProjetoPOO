@@ -83,7 +83,11 @@
           </header>
 
           <section class="inventario" aria-labelledby="inventario-titulo">
-            <h2 class="inventario__titulo" id="inventario-titulo">Inventário</h2>
+            <div class="inventario__cabecalho">
+              <h2 class="inventario__titulo" id="inventario-titulo">Inventário</h2>
+              <!-- leva direto para a aba Vender da loja (js/lojas.js lê o ?modo=vender); some se o inventário estiver vazio -->
+              <a class="btn btn--pequeno btn--vender" id="btn-vender" href="lojas.html?modo=vender" hidden>vender</a>
+            </div>
             <!-- os cards entram aqui (modelo no <template> abaixo) -->
             <div class="grade-itens" id="inventario-lista"></div>
           </section>

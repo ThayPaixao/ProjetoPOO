@@ -69,6 +69,8 @@ Outros comandos:
 - **Conquistas**: 8 medalhas (primeira compra, irídio, peixe de 45 cm, comprar em todas as lojas, vender para todos os
   moradores, 1.000 g de lucro...). As metas de lojas e moradores vêm do banco: crescem junto com a vila. Quando uma compra/venda libera uma, o pop-up da loja avisa.
 - **Diário de gostos**: na página da vila, o que você já descobriu sobre cada morador (só o que já vendeu).
+- **Atalho para vender**: no perfil, o botão "vender" ao lado do inventário abre a loja direto na aba Vender
+  (`lojas.html?modo=vender`). Ele só aparece se o inventário tiver algum item.
 
 ## API (usada pelo `js/api.js`)
 | Rota | O que faz |
